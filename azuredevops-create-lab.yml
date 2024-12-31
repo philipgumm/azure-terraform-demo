@@ -1,0 +1,45 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - group: Certificates
+
+steps:
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: 'latest'
+
+  - task: TerraformTaskV4@4
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      backendServiceArm: 'Pay-As-You-Go(357a5cd3-a5ef-489c-b770-7bbae655337c)'
+      backendAzureRmResourceGroupName: 'LabManagement'
+      backendAzureRmStorageAccountName: 'labmanagementstorage01'
+      backendAzureRmContainerName: 'sea-terraform-01-dev'
+      backendAzureRmKey: 'terraform.tfstate'
+  
+  - task: TerraformTaskV4@4
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      commandOptions: '-out=tfplan -var="root_certificate_data=$(ROOT_CERTIFICATE_DATA)"'
+      environmentServiceNameAzureRM: 'Pay-As-You-Go(357a5cd3-a5ef-489c-b770-7bbae655337c)'
+
+  - task: TerraformTaskV4@4
+    inputs:
+      provider: 'azurerm'
+      command: 'apply'
+      commandOptions: '-var="root_certificate_data=$(ROOT_CERTIFICATE_DATA)"'
+      environmentServiceNameAzureRM: 'Pay-As-You-Go(357a5cd3-a5ef-489c-b770-7bbae655337c)'
+      
+
+

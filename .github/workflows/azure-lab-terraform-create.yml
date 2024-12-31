@@ -1,0 +1,67 @@
+name: "azure-terraform-lab deployment"
+on:
+  workflow_dispatch:
+
+# Update secrets TF_VAR_agent_client_id, TF_VAR_agent_client_secret, TF_VAR_subscription_id, TF_VAR_tenant_id in the GitHub repository. 
+# For steps to create and store secrets, please check https://docs.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets
+
+permissions:
+      id-token: write
+      contents: read
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
+
+    env:
+      TF_VAR_client_id: ${{ secrets.AZURE_CLIENT_ID }}
+      TF_VAR_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
+      TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_root_certificate_data: ${{ vars.root_certificate_data }}
+
+    steps:
+
+      - name: "Checkout"
+        uses: actions/checkout@master
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: "Terraform Format"
+        id: fmt
+        run: terraform fmt
+
+      - name: "Terraform Init"
+        id: init
+        run: | 
+          terraform init \
+          -backend-config="resource_group_name=LabManagement" \
+          -backend-config="storage_account_name=labmanagementstorage01" \
+          -backend-config="container_name=azure-terraform-lab" \
+          -backend-config="key=terraform.tfstate"
+
+      - name: "Terraform Validate"
+        id: validate
+        run: terraform validate -no-color
+
+      - name: "Terraform Plan"
+        id: plan
+        run: terraform plan -no-color
+        env:
+          TF_VAR_azure_client_id: ${{ secrets.azure_client_id }}
+          TF_VAR_azure_client_secret: ${{ secrets.azure_client_secret }}
+          TF_VAR_azure_subscription_id: ${{ secrets.azure_subscription_id }}
+          TF_VAR_azure_tenant_id: ${{ secrets.azure_tenant_id }}
+          TF_VAR_root_certificate_data: ${{ vars.root_certificate_data }}
+
+      - name: "Terraform Apply"
+        id: apply
+        run: terraform apply -auto-approve -no-color
+        env:
+          TF_VAR_azure_client_id: ${{ secrets.azure_client_id }}
+          TF_VAR_azure_client_secret: ${{ secrets.azure_client_secret }}
+          TF_VAR_azure_subscription_id: ${{ secrets.azure_subscription_id }}
+          TF_VAR_azure_tenant_id: ${{ secrets.azure_tenant_id }}
+          TF_VAR_root_certificate_data: ${{ vars.root_certificate_data }}

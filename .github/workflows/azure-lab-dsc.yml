@@ -1,0 +1,42 @@
+name: Deploy DSC to Windows Server
+
+on:
+  workflow_dispatch
+
+env:
+  DSC_FOLDER: "${{ github.workspace }}\DSC"
+
+jobs:
+  deploy-dsc:
+    runs-on: windows-latest
+
+    steps:
+    # Checkout the repository to access the DSC files
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Install PowerShell modules required for DSC
+    - name: Install PowerShell DSC Module
+      run: |
+        Install-Module -Name PSDesiredStateConfiguration -Force -Scope CurrentUser
+        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+
+    # Deploy DSC to Windows Server
+    - name: Apply DSC Configuration
+      run: |
+        # Define server details
+        $server = "YourServerIPAddressOrName"
+        $username = "YourUsername"
+        $password = ConvertTo-SecureString 'YourSecurePassword' -AsPlainText -Force
+        $credential = New-Object System.Management.Automation.PSCredential ($username, $password)
+
+        # Path to the DSC configuration file in the repository
+        $dscFilePath = "$env:DSC_FOLDER\window_server_dsc.ps1"
+
+        # Import DSC Configuration and apply it on the remote server
+        Invoke-Command -ComputerName $server -Credential $credential -ScriptBlock {
+          param ($dscFile)
+          # Import and apply the DSC Configuration
+          . $dscFile
+          Start-DscConfiguration -Path C:\DSC -Wait -Verbose -Force
+        } -ArgumentList $dscFilePath

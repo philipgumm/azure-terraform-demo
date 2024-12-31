@@ -1,0 +1,43 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+schedules:
+  - cron: "0 19 * * *"  # At 2 AM every day SGT
+    displayName: 'Nightly 2 AM Run SGT'
+    branches:
+      include:
+        - main  # Run the scheduled trigger on the main branch
+    always: true  # Run even if there are no code changes
+
+variables:
+  - group: Certificates
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - task: TerraformInstaller@1
+    inputs:
+      terraformVersion: 'latest'
+
+  - task: TerraformTaskV4@4
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      backendServiceArm: 'Pay-As-You-Go(357a5cd3-a5ef-489c-b770-7bbae655337c)'
+      backendAzureRmResourceGroupName: 'LabManagement'
+      backendAzureRmStorageAccountName: 'labmanagementstorage01'
+      backendAzureRmContainerName: 'sea-terraform-01-dev'
+      backendAzureRmKey: 'terraform.tfstate'
+  
+  - task: TerraformTaskV4@4
+    inputs:
+      provider: 'azurerm'
+      command: 'destroy'
+      commandOptions: '-lock=false -var="root_certificate_data=$(ROOT_CERTIFICATE_DATA)"'
+      environmentServiceNameAzureRM: 'Pay-As-You-Go(357a5cd3-a5ef-489c-b770-7bbae655337c)'
