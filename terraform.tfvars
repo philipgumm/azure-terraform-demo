@@ -1,10 +1,10 @@
-resource_group = "azure-terraform-lab"
+resource_group = "azure-terraform-demo"
 
 location = "southeast asia"
 
 storage_account_name = "labmanagementstorage01"
 
-container_name = "azure-terraform-lab"
+container_name = "azure-terraform-demo"
 
 prefix-linux-name = "app-lin-srv"
 
