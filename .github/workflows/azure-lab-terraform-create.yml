@@ -1,4 +1,4 @@
-name: "azure-terraform-lab deployment"
+name: "azure-terraform-demo deployment"
 on:
   workflow_dispatch:
 
@@ -36,7 +36,7 @@ jobs:
           terraform init \
           -backend-config="resource_group_name=LabManagement" \
           -backend-config="storage_account_name=labmanagementstorage01" \
-          -backend-config="container_name=azure-terraform-lab" \
+          -backend-config="container_name=azure-terraform-demo" \
           -backend-config="key=terraform.tfstate"
 
       - name: "Terraform Validate"
