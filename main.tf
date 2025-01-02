@@ -7,7 +7,7 @@ terraform {
     container_name       = "azure-terraform-demo"                               # Can be passed via `-backend-config=`"container_name=<container name>"` in the `init` command.
     key                  = "terraform.tfstate"                # Can be passed via `-backend-config=`"key=<blob key name>"` in the `init` command.
     use_oidc             = true                                    # Can also be set via `ARM_USE_OIDC` environment variable.
-    client_id            = "cd8d14eb-2c69-4a39-9f08-64a22f4dde1f"  # Can also be set via `ARM_CLIENT_ID` environment variable.
+    client_id            = "cb96e845-aa06-4954-b93c-ccf03f6353b5"  # Can also be set via `ARM_CLIENT_ID` environment variable.
     subscription_id      = "357a5cd3-a5ef-489c-b770-7bbae655337c"  # Can also be set via `ARM_SUBSCRIPTION_ID` environment variable.
     tenant_id            = "1b4c23c2-2d33-4a53-ad59-3190309565e2"  # Can also be set via `ARM_TENANT_ID` environment variable.
     use_azuread_auth     = true                                    # Can also be set via `ARM_USE_AZUREAD` environment variable.
