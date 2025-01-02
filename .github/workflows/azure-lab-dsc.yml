@@ -3,8 +3,8 @@ name: Deploy DSC to Windows Server
 on:
   workflow_dispatch
 
-env:
-  DSC_FOLDER: "${{ github.workspace }}\DSC"
+#env:
+#  DSC_FOLDER: "${{ github.workspace }}\DSC"
 
 jobs:
   deploy-dsc:
