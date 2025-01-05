@@ -15,6 +15,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Download Terraform Server Names Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: terraform-outputs
+
+    - name: Extract Terraform names from JSON
+      id: parse_servers
+      run: |
+        server_names=$(jq -r '.server_names.value[]' terraform_outputs.json)
+        echo "SERVERS=$server_names" >> $GITHUB_ENV
+
     # Install PowerShell modules required for DSC
     - name: Install PowerShell DSC Module
       run: |
@@ -23,20 +34,15 @@ jobs:
 
     # Deploy DSC to Windows Server
     - name: Apply DSC Configuration
-      run: |
-        # Define server details
-        $server = "YourServerIPAddressOrName"
-        $username = "YourUsername"
-        $password = ConvertTo-SecureString 'YourSecurePassword' -AsPlainText -Force
-        $credential = New-Object System.Management.Automation.PSCredential ($username, $password)
-
-        # Path to the DSC configuration file in the repository
-        $dscFilePath = "$env:DSC_FOLDER\window_server_dsc.ps1"
-
-        # Import DSC Configuration and apply it on the remote server
-        Invoke-Command -ComputerName $server -Credential $credential -ScriptBlock {
-          param ($dscFile)
-          # Import and apply the DSC Configuration
-          . $dscFile
-          Start-DscConfiguration -Path C:\DSC -Wait -Verbose -Force
-        } -ArgumentList $dscFilePath
+    uses: appleboy/ssh-action@v0.1.5
+    with:
+      host: ${{ env.SERVERS }}
+      username: ${{ secrets.WINDOWS_USER }}
+      password: ${{ secrets.WINDOWS_PASSWORD }}
+      script: |
+        powershell -Command "
+        Copy-Item -Path ./dsc/active_directory.ps1 -Destination C:\DSC\active_directory.ps1 -Force;
+        .\C:\DSC\active_directory.ps1
+        Start-DscConfiguration -Path C:\DSC -Wait -Verbose
+        "
+  

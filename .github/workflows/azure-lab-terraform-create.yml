@@ -55,10 +55,18 @@ jobs:
 
       - name: "Terraform Apply"
         id: apply
-        run: terraform apply -auto-approve -no-color
+        run: | 
+          terraform apply -auto-approve -no-color
+          terraform output -json > terraform_outputs.json
         env:
           TF_VAR_azure_client_id: ${{ secrets.azure_client_id }}
           TF_VAR_azure_client_secret: ${{ secrets.azure_client_secret }}
           TF_VAR_azure_subscription_id: ${{ secrets.azure_subscription_id }}
           TF_VAR_azure_tenant_id: ${{ secrets.azure_tenant_id }}
           TF_VAR_root_certificate_data: ${{ vars.root_certificate_data }}
+
+      - name: Upload Terraform Outputs
+        uses: actions/upload-artifact@v3
+        with:
+          name: terraform-outputs
+          path: terraform_outputs.json
