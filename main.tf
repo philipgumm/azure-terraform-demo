@@ -182,8 +182,8 @@ resource "azurerm_virtual_machine" "windows_vm" {
 
   os_profile {
     computer_name  = each.value.name
-    admin_username = "azureuser"
-    admin_password = "P@ssword1234!"
+    admin_username = var.local_windows_user
+    admin_password = var.local_windows_password
   }
 
   os_profile_windows_config {}

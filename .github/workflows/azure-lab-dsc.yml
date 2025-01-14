@@ -1,48 +1,52 @@
-name: Deploy DSC to Windows Server
+name: Deploy DSC Script
 
 on:
-  workflow_dispatch
-
-#env:
-#  DSC_FOLDER: "${{ github.workspace }}\DSC"
+  push:
+    branches:
+      - main
 
 jobs:
   deploy-dsc:
     runs-on: windows-latest
 
+    env:
+      local_windows_user: ${{ secrets.local_windows_password}}
+      local_windows_password: ${{ secrets.LOCAL_WINDOWS_PASSWORD }}
+
     steps:
-    # Checkout the repository to access the DSC files
+    # Check out the repository
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Download Terraform Server Names Artifact
-      uses: actions/download-artifact@v3
-      with:
-        name: terraform-outputs
-
-    - name: Extract Terraform names from JSON
-      id: parse_servers
+    # Install PowerShell Modules (if needed)
+    - name: Install PowerShell modules
+      shell: pwsh  
       run: |
-        server_names=$(jq -r '.server_names.value[]' terraform_outputs.json)
-        echo "SERVERS=$server_names" >> $GITHUB_ENV
+        Install-Module -Name PSWSMan -Force -SkipPublisherCheck
+        Install-Module -Name PSDesiredStateConfiguration -Force -SkipPublisherCheck
+      
 
-    # Install PowerShell modules required for DSC
-    - name: Install PowerShell DSC Module
+    # Execute the DSC script on the remote server
+    - name: Invoke DSC remotely
       run: |
-        Install-Module -Name PSDesiredStateConfiguration -Force -Scope CurrentUser
-        Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser
+        $vmNames = Get-Content -Path "./windows_server_names.json" | ConvertFrom-Json  
+      
+        foreach ($vmName in $vmNames) {
 
-    # Deploy DSC to Windows Server
-    - name: Apply DSC Configuration
-    uses: appleboy/ssh-action@v0.1.5
-    with:
-      host: ${{ env.SERVERS }}
-      username: ${{ secrets.WINDOWS_USER }}
-      password: ${{ secrets.WINDOWS_PASSWORD }}
-      script: |
-        powershell -Command "
-        Copy-Item -Path ./dsc/active_directory.ps1 -Destination C:\DSC\active_directory.ps1 -Force;
-        .\C:\DSC\active_directory.ps1
-        Start-DscConfiguration -Path C:\DSC -Wait -Verbose
-        "
-  
+        $server = $vmName
+        $username = ConvertTo-SecureString -String ${{ secrets.local_windows_user }} -AsPlainText -Force
+        $password = ConvertTo-SecureString -String ${{ secrets.local_windows_password }} -AsPlainText -Force
+        $credential = New-Object System.Management.Automation.PSCredential($username, $password)
+
+        $dscScriptPath = "${{ github.workspace }}\dsc\windows_server_dsc.ps1"
+
+                Invoke-Command -ComputerName $server -Credential $credential -ScriptBlock {
+            param ($dscScriptPath)
+            & PowerShell -File $dscScriptPath
+        } -ArgumentList $dscScriptPath
+
+        }
+
+
+
+      shell: pwsh

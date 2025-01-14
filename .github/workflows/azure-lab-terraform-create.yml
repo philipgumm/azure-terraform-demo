@@ -16,6 +16,8 @@ jobs:
       TF_VAR_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
       TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       TF_VAR_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+      TF_VAR_local_windows_user: ${{ secrets.local_windows_password}}
+      TF_VAR_local_windows_password: ${{ secrets.LOCAL_WINDOWS_PASSWORD }}
       TF_VAR_root_certificate_data: ${{ vars.root_certificate_data }}
 
     steps:
@@ -46,27 +48,26 @@ jobs:
       - name: "Terraform Plan"
         id: plan
         run: terraform plan -no-color
-        env:
-          TF_VAR_azure_client_id: ${{ secrets.azure_client_id }}
-          TF_VAR_azure_client_secret: ${{ secrets.azure_client_secret }}
-          TF_VAR_azure_subscription_id: ${{ secrets.azure_subscription_id }}
-          TF_VAR_azure_tenant_id: ${{ secrets.azure_tenant_id }}
-          TF_VAR_root_certificate_data: ${{ vars.root_certificate_data }}
 
       - name: "Terraform Apply"
         id: apply
         run: | 
           terraform apply -auto-approve -no-color
-          terraform output -json > terraform_outputs.json
-        env:
-          TF_VAR_azure_client_id: ${{ secrets.azure_client_id }}
-          TF_VAR_azure_client_secret: ${{ secrets.azure_client_secret }}
-          TF_VAR_azure_subscription_id: ${{ secrets.azure_subscription_id }}
-          TF_VAR_azure_tenant_id: ${{ secrets.azure_tenant_id }}
-          TF_VAR_root_certificate_data: ${{ vars.root_certificate_data }}
 
-      - name: Upload Terraform Outputs
+      - name: Save Windows Server Names
+        run: terraform output -json windows_server_names > windows_server_names.json
+  
+      - name: Save Linux Server Names
+        run: terraform output -json linux_server_names > linux_server_names.json
+
+      - name: Upload Windows Server Names
         uses: actions/upload-artifact@v3
         with:
-          name: terraform-outputs
-          path: terraform_outputs.json
+          name: windows_server_names
+          path: windows_server_names.json
+  
+      - name: Upload Linux Server Names
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux_server_names
+          path: linux_server_names.json

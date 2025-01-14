@@ -34,7 +34,12 @@ variable storage_account_name {
 variable ssh_public_key {
     description = "this is the public key held in terraform.tfvars"
 }
-
+variable local_windows_user{
+    description = "this is the public key held in terraform.tfvars"
+}
+variable local_windows_password{
+    description = "this is the public key held in terraform.tfvars"
+}
 variable admin_password {
     description = "this is the public key held in terraform.tfvars"
 }
