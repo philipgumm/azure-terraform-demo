@@ -2,15 +2,15 @@
 terraform {
   
   backend "azurerm" {
-    resource_group_name  = "azure-terraform-demo"          # Can be passed via `-backend-config=`"resource_group_name=<resource group name>"` in the `init` command.
-    storage_account_name = "labmanagementstorage01"                              # Can be passed via `-backend-config=`"storage_account_name=<storage account name>"` in the `init` command.
-    container_name       = "azure-terraform-demo"                               # Can be passed via `-backend-config=`"container_name=<container name>"` in the `init` command.
-    key                  = "terraform.tfstate"                # Can be passed via `-backend-config=`"key=<blob key name>"` in the `init` command.
-    use_oidc             = true                                    # Can also be set via `ARM_USE_OIDC` environment variable.
-    client_id            = "cb96e845-aa06-4954-b93c-ccf03f6353b5"  # Can also be set via `ARM_CLIENT_ID` environment variable.
-    subscription_id      = "357a5cd3-a5ef-489c-b770-7bbae655337c"  # Can also be set via `ARM_SUBSCRIPTION_ID` environment variable.
-    tenant_id            = "1b4c23c2-2d33-4a53-ad59-3190309565e2"  # Can also be set via `ARM_TENANT_ID` environment variable.
-    use_azuread_auth     = true                                    # Can also be set via `ARM_USE_AZUREAD` environment variable.
+    resource_group_name  = "azure-terraform-demo"          
+    storage_account_name = "labmanagementstorage01"
+    container_name       = "azure-terraform-demo"                               
+    key                  = "terraform.tfstate"                
+    use_oidc             = true                                    
+    client_id            = "cb96e845-aa06-4954-b93c-ccf03f6353b5"  
+    subscription_id      = "357a5cd3-a5ef-489c-b770-7bbae655337c"  
+    tenant_id            = "1b4c23c2-2d33-4a53-ad59-3190309565e2"  
+    use_azuread_auth     = true                                    
   }
 
   required_providers {
@@ -214,6 +214,24 @@ resource "azurerm_virtual_machine" "windows_vm" {
   }
 }
 
+resource "azurerm_virtual_machine_extension" "windows_base_script" {
+  for_each             = azurerm_virtual_machine.windows_vm
+  name                 = "custom-script-extension-${each.key}"
+  virtual_machine_id   = each.value
+  publisher            = "Microsoft.Compute"
+  type                 = "CustomScriptExtension"
+  type_handler_version = "1.10"
+  auto_upgrade_minor_version = true
+
+settings = <<SETTINGS
+  {
+      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -Command \\"
+      Invoke-WebRequest -Uri https://raw.githubusercontent.com/philipgumm/azure-terraform-demo/main/cse-base/base.ps1 -OutFile C:\\temp\\base.ps1; C:\\temp\\base.ps1"
+  }
+SETTINGS
+
+}
+
 output "windows_server_names" {
   value = azurerm_windows_virtual_machine.vm.*.name
 }
@@ -221,19 +239,3 @@ output "windows_server_names" {
 output "linux_server_names" {
   value = azurerm_linux_virtual_machine.vm.*.name
 }
-
-#    resource "azurerm_virtual_machine_extension" "dsc" {
-#    name                 = "ApplyDSC"
-#    virtual_machine_id   = azurerm_virtual_machine.vm.id
-#    publisher            = "Microsoft.Compute"
-#    type                 = "CustomScriptExtension"
-#    type_handler_version = "2.0"
-#
-#    settings = <<SETTINGS
-#    {
-#        "commandToExecute": "powershell.exe -Command \"
-#          Invoke-WebRequest -Uri https://<storage-url>/BaseConfiguration.ps1 -OutFile C:\\BaseConfiguration.ps1;
-#          . C:\\BaseConfiguration.ps1; Start-DscConfiguration -Path C:\\BaseConfiguration -Wait -Verbose -Force;
-#    }
-#    SETTINGS
-#}

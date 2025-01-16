@@ -22,5 +22,13 @@ Set-TimeZone -Id "Singapore Standard Time"
 Write-Host "Configuring Windows Firewall rules..."
 New-NetFirewallRule -DisplayName "Allow WinRM" -Direction Inbound -Protocol TCP -LocalPort 5985 -Action Allow
 
+
+# Create logging test between two different requests
+# Use variable to replace the URL, Repo, Branch and Script name. 
+  
+
+
+# Invoke-WebRequest -Uri $filepath -OutFile C:\\temp\\script.ps1; C:\\temp\\script.ps1\""
+
 # Setup complete
 Write-Host "Initialization complete!"
