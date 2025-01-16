@@ -61,13 +61,13 @@ jobs:
         run: terraform output -json linux_server_names > linux_server_names.json
 
       - name: Upload Windows Server Names
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: windows_server_names
           path: windows_server_names.json
   
       - name: Upload Linux Server Names
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: linux_server_names
           path: linux_server_names.json
