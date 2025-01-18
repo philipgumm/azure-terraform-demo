@@ -218,24 +218,24 @@ resource "azurerm_virtual_machine_extension" "windows_base_script" {
   for_each             = azurerm_virtual_machine.windows_vm
   name                 = "custom-script-extension-${each.key}"
   virtual_machine_id   = each.value
-  publisher            = "Microsoft.Compute"
+  publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScriptExtension"
-  type_handler_version = "1.10"
+  type_handler_version = "2.0"
   auto_upgrade_minor_version = true
 
-settings = <<SETTINGS
-  {
-      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -Command \\"
-      Invoke-WebRequest -Uri https://raw.githubusercontent.com/philipgumm/azure-terraform-demo/main/cse-base/base.ps1 -OutFile C:\\temp\\base.ps1; C:\\temp\\base.ps1"
-  }
+  settings = <<SETTINGS
+{
+  "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/azure-terraform-demo/base.ps1"],
+  "commandToExecute": "powershell.exe base.ps1",
+  "managedIdentity" : {"objectID": "16a77fc9-b28c-474f-8210-63a41f9c6e02"}
+}
 SETTINGS
-
 }
 
 output "windows_server_names" {
-  value = azurerm_windows_virtual_machine.vm.*.name
+  value = azurerm_windows_virtual_machine.windows_vm.*.name
 }
 
 output "linux_server_names" {
-  value = azurerm_linux_virtual_machine.vm.*.name
+  value = azurerm_linux_virtual_machine.linux_vm.*.name
 }
