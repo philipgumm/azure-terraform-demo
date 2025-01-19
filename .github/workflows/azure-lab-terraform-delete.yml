@@ -2,7 +2,7 @@ name: Terraform Destroy for Azure
 
 on:
   schedule:
-    - cron: "0 2 * * *" # Runs every Sunday at midnight UTC
+    - cron: "0 18 * * *" # Runs every Sunday at midnight UTC
   workflow_dispatch: # Manual trigger
 
 permissions:
