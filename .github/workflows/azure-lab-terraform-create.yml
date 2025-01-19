@@ -16,7 +16,7 @@ jobs:
       TF_VAR_azure_client_secret: ${{ secrets.AZURE_CLIENT_SECRET }}
       TF_VAR_azure_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       TF_VAR_azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
-      TF_VAR_local_windows_user: ${{ secrets.local_windows_user}}
+      TF_VAR_local_windows_user: ${{ secrets.LOCAL_WINDOWS_USER }}
       TF_VAR_local_windows_password: ${{ secrets.LOCAL_WINDOWS_PASSWORD }}
       TF_VAR_root_certificate_data: ${{ vars.root_certificate_data }}
 

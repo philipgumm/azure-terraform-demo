@@ -141,7 +141,7 @@ resource "azurerm_virtual_machine" "linux_vm" {
 
   os_profile {
     computer_name  = each.value.name
-    admin_username = "azureuser"
+    admin_username = var.local_windows_user
   }
 
   os_profile_linux_config {
@@ -217,7 +217,7 @@ resource "azurerm_virtual_machine" "windows_vm" {
 resource "azurerm_virtual_machine_extension" "windows_base_script" {
   for_each             = azurerm_virtual_machine.windows_vm
   name                 = "custom-script-extension-${each.key}"
-  virtual_machine_id   = each.value
+  virtual_machine_id   = each.value.id
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScriptExtension"
   type_handler_version = "2.0"

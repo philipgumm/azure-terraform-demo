@@ -33,6 +33,8 @@ jobs:
       
         foreach ($vmName in $vmNames) {
 
+        # Test-WSMan -ComputerName $vmName
+
         $server = $vmName
         $username = ConvertTo-SecureString -String ${{ secrets.local_windows_user }} -AsPlainText -Force
         $password = ConvertTo-SecureString -String ${{ secrets.local_windows_password }} -AsPlainText -Force
@@ -40,7 +42,7 @@ jobs:
 
         $dscScriptPath = "${{ github.workspace }}\dsc\windows_server_dsc.ps1"
 
-                Invoke-Command -ComputerName $server -Credential $credential -ScriptBlock {
+        Invoke-Command -ComputerName $server -Credential $credential -ScriptBlock {
             param ($dscScriptPath)
             & PowerShell -File $dscScriptPath
         } -ArgumentList $dscScriptPath

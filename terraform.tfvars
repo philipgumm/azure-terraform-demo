@@ -4,12 +4,6 @@ location = "southeast asia"
 
 storage_account_name = "labmanagementstorage01"
 
-container_name = "azure-terraform-demo"
-
-prefix-linux-name = "app-lin-srv"
-
-prefix-windows-name = "man-win-srv"
-
 ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVAMdnkZS//tGf9/w9QOBAniMIKLb6EavbKDpLBJcNh2/SZb/bv90OM0cA3s+RqQRF52nvDDUi1FHrnD1zH7AB6N0TCSBWfcFgSOf1NlyIrf/PjAF3yHcrXItzzzHllpUhwoDtPUzI7MN1t3UpWJRaGdPdgJPFZinC3CSHxrfhTgqwzi4vgPwFfemAmJFoe2SsLj0WVWG/zsuW4Erv2kXadcO/eCxcK99w2UVCoyyu81ehFSKuqHzdpO/ykuqR715/XF+ub1r0jg5RTYGj5hxDE5AMljxJ6LfIFNhXRLNU1EQhRIkOdzQ2zpWTY/pfzB51k4CJJ+Al86NaewrvsaFv wlb\\gummp@SYS003306222157"
 
 admin_password = "Nights2k!!"
