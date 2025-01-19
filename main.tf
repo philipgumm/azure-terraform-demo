@@ -232,10 +232,11 @@ resource "azurerm_virtual_machine_extension" "windows_base_script" {
 SETTINGS
 }
 
-output "windows_server_names" {
-  value = azurerm_windows_virtual_machine.windows_vm.*.name
+output "windows_vm_names" {
+  value = [for vm in azurerm_windows_virtual_machine.windows_vms : vm.name]
 }
 
-output "linux_server_names" {
-  value = azurerm_linux_virtual_machine.linux_vm.*.name
+output "linux_vm_names" {
+  value = [for vm in azurerm_linux_virtual_machine.linux_vms : vm.name]
 }
+
