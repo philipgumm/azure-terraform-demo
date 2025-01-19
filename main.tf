@@ -233,10 +233,10 @@ SETTINGS
 }
 
 output "windows_vm_names" {
-  value = [for vm in azurerm_windows_virtual_machine.windows_vms : vm.name]
+  value = [for vm in azurerm_windows_virtual_machine.windows_vm : vm.name]
 }
 
 output "linux_vm_names" {
-  value = [for vm in azurerm_linux_virtual_machine.linux_vms : vm.name]
+  value = [for vm in azurerm_linux_virtual_machine.linux_vm : vm.name]
 }
 

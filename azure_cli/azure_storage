@@ -1,7 +1,7 @@
 #!/bin/bash
 
 RESOURCE_GROUP="myResourceGroup"
-LOCATION="eastus"
+LOCATION="southeastasia"
 VM_NAME="myVM"
 
 az storage blob upload \
