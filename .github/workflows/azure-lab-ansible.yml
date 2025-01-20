@@ -1,1 +1,9 @@
+name: "Ansible Configuration Deploy"
+on:
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    name: "Terraform"
+    runs-on: ubuntu-latest
 

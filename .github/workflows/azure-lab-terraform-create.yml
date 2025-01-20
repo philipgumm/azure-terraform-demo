@@ -1,4 +1,4 @@
-name: "azure-terraform-demo deployment"
+name: "Terraform Lab Deploy"
 on:
   workflow_dispatch:
 
