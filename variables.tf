@@ -40,9 +40,6 @@ variable local_windows_user{
 variable local_windows_password{
     description = "this is the public key held in terraform.tfvars"
 }
-variable admin_password {
-    description = "this is the public key held in terraform.tfvars"
-}
 
 variable "root_certificate_data" {
   type        = string
