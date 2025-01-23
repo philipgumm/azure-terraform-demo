@@ -39,7 +39,6 @@ resource "azurerm_resource_group" "rg" {
   location = var.location
 }
 
-
 resource "azurerm_virtual_network" "network" {
   name                = "${var.sea-terraform}-network"
   address_space       = ["10.0.0.0/16"]
@@ -184,7 +183,7 @@ resource "azurerm_virtual_machine" "linux_vm" {
 resource "azurerm_managed_disk" "windows_data_disks" {
   for_each = var.windows_vm_configurations
 
-  name                 = "${each.value.name}windows-data-disk"
+  name                 = "${each.value.name}-windows-data-disk"
   location             = var.location
   resource_group_name  = var.resource_group
   storage_account_type = "Standard_LRS"
@@ -192,7 +191,7 @@ resource "azurerm_managed_disk" "windows_data_disks" {
   create_option        = "Empty"
 }
 
-resource "azurerm_virtual_machine_data_disk_attachment" "example" {
+resource "azurerm_virtual_machine_data_disk_attachment" "windows-attach-disk" {
   managed_disk_id    = azurerm_managed_disk.windows_data_disks[each.key].id
   virtual_machine_id = azurerm_windows_virtual_machine.windows_data_disks[each.key].id
   lun                = 0
