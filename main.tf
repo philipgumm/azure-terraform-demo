@@ -16,18 +16,22 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.112.0"
+      version = "4.16.0"
     }
   }
-  required_version = ">= 1.1.0"
 }
 
 provider "azurerm" {
-  features {}
+  features {
+     virtual_machine {
+      delete_os_disk_on_deletion            = true
+    }
+  }
       client_id = var.azure_client_id
       client_secret = var.azure_client_secret
       tenant_id = var.azure_tenant_id
       subscription_id = var.azure_subscription_id
+
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -40,12 +44,12 @@ resource "azurerm_virtual_network" "network" {
   name                = "${var.sea-terraform}-network"
   address_space       = ["10.0.0.0/16"]
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group
 }
 
 resource "azurerm_subnet" "internal" {
   name                 = "internal"
-  resource_group_name  = azurerm_resource_group.rg.name
+  resource_group_name  = var.resource_group
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.0.2.0/24"]
 }
@@ -54,7 +58,7 @@ resource "azurerm_network_interface" "linux-nic" {
   for_each = var.linux_vm_configurations
 
   name                = "${each.key}-nic"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group
   location            = var.location
 
   ip_configuration {
@@ -68,7 +72,7 @@ resource "azurerm_network_interface" "windows-nic" {
   for_each = var.windows_vm_configurations
 
   name                = "${each.key}-nic"
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group
   location            = var.location
 
   ip_configuration {
@@ -81,7 +85,7 @@ resource "azurerm_network_interface" "windows-nic" {
 # Create Gateway Subnet for the VPN Gateway
 resource "azurerm_subnet" "gateway_subnet" {
   name                 = "GatewaySubnet"
-  resource_group_name  = azurerm_resource_group.rg.name
+  resource_group_name  = var.resource_group
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.0.255.0/27"]  # Reserved for Gateway
 }
@@ -90,7 +94,7 @@ resource "azurerm_subnet" "gateway_subnet" {
 resource "azurerm_public_ip" "vpn-public-ip" {
   name                = "sealab-vpn-gateway-pip"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group
   allocation_method   = "Static"
   sku                 = "Standard"
   lifecycle {
@@ -100,9 +104,9 @@ resource "azurerm_public_ip" "vpn-public-ip" {
 
 # Create Virtual Network Gateway for the P2S VPN
 resource "azurerm_virtual_network_gateway" "vpn-gateway" {
-  name                = "sealab-vpn-gateway"
+  name                = "azure-lab-vpn-gateway"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group
   type                = "Vpn"
   vpn_type            = "RouteBased"
   active_active       = false
@@ -127,12 +131,20 @@ resource "azurerm_virtual_network_gateway" "vpn-gateway" {
   }
 }
 
-# Create virtual machines for both Linux 
+resource "azurerm_managed_disk" "linux_data_disk" {
+  name                 = "linux-data-disk"
+  location             = var.location
+  resource_group_name  = var.resource_group
+  storage_account_type = "Standard_LRS"
+  disk_size_gb         = 50
+  create_option        = "Empty"
+}
+
 resource "azurerm_virtual_machine" "linux_vm" {
   for_each = var.linux_vm_configurations
 
   name                  = each.value.name
-  resource_group_name   = azurerm_resource_group.rg.name
+  resource_group_name   = var.resource_group
   location              = var.location
   network_interface_ids = [azurerm_network_interface.linux-nic[each.key].id]
   vm_size               = each.value.vm_size
@@ -169,48 +181,47 @@ resource "azurerm_virtual_machine" "linux_vm" {
   }
 }
 
-resource "azurerm_virtual_machine" "windows_vm" {
+resource "azurerm_managed_disk" "windows_data_disks" {
+  for_each = var.windows_vm_configurations
+
+  name                 = "${each.value.name}windows-data-disk"
+  location             = var.location
+  resource_group_name  = var.resource_group
+  storage_account_type = "Standard_LRS"
+  disk_size_gb         = 50
+  create_option        = "Empty"
+}
+
+resource "azurerm_virtual_machine_data_disk_attachment" "example" {
+  managed_disk_id    = azurerm_managed_disk.windows_data_disks[each.key].id
+  virtual_machine_id = azurerm_windows_virtual_machine.windows_data_disks[each.key].id
+  lun                = 0
+  caching            = "ReadWrite"
+}
+
+resource "azurerm_windows_virtual_machine" "windows_vm" {
   for_each = var.windows_vm_configurations
 
   name                  = each.value.name
-  resource_group_name   = azurerm_resource_group.rg.name
+  resource_group_name   = var.resource_group
   location              = var.location
   network_interface_ids = [azurerm_network_interface.windows-nic[each.key].id]
-  vm_size               = each.value.vm_size
-  delete_os_disk_on_termination = true
-  delete_data_disks_on_termination = true
+  size                  = each.value.size
+  admin_username        = var.local_windows_user
+  admin_password        = var.local_windows_password  
+  computer_name         = each.value.name 
 
-  os_profile {
-    computer_name  = each.value.name
-    admin_username = var.local_windows_user
-    admin_password = var.local_windows_password
+  os_disk {
+    name                  = "${each.value.name}-osdisk"
+    caching               = "ReadWrite"
+    storage_account_type  = "Standard_LRS"
   }
-
-  os_profile_windows_config {}
-
-  storage_image_reference {
+  
+  source_image_reference {
     publisher = each.value.image_publisher
     offer     = each.value.image_offer
     sku       = each.value.image_sku
     version   = "latest"
-  }
-
-  storage_os_disk {
-    name              = "${each.key}-osdisk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-    
-  }
-  
-  storage_data_disk {
-    name              = "${each.key}-data-disk"
-    lun               = 0
-    caching           = "ReadOnly"
-    create_option     = "Empty"
-    disk_size_gb      = 50
-    managed_disk_type = "Standard_LRS"
-    
   }
 }
 
