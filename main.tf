@@ -192,6 +192,8 @@ resource "azurerm_managed_disk" "windows_data_disks" {
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "windows-attach-disk" {
+  for_each = azurerm_managed_disk.windows_data_disks
+  
   managed_disk_id    = azurerm_managed_disk.windows_data_disks[each.key].id
   virtual_machine_id = azurerm_windows_virtual_machine[each.key].id
   lun                = 0
