@@ -59,7 +59,7 @@ variable "rg-sin" {
 variable "linux_vm_configurations" {
   type = map(object({
     name            = string
-    vm_size         = string
+    size         = string
     image_publisher = string
     image_offer     = string
     image_sku       = string
