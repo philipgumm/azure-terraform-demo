@@ -21,11 +21,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the repository
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Step 2: Set up Azure credentials
     - name: Log in to Azure
       uses: azure/login@v2
       with:
@@ -33,24 +31,19 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-
-    # Step 3: Set up Terraform
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.6.0 
 
-    # Step 4: Initialize Terraform
     - name: Terraform Init
       run: terraform init
 
     - name: Pull Current State 
       run: terraform refresh
 
-    # Step 5: Plan Terraform Destroy
     - name: Terraform Plan Destroy
       run: terraform plan -destroy -out=destroy.plan
 
-    # Step 6: Apply Terraform Destroy
     - name: Terraform Apply Destroy
       run: terraform apply -auto-approve destroy.plan
