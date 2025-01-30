@@ -81,7 +81,6 @@ resource "azurerm_network_interface" "windows-nic" {
   }
 }
 
-# Create Gateway Subnet for the VPN Gateway
 resource "azurerm_subnet" "gateway_subnet" {
   name                 = "GatewaySubnet"
   resource_group_name  = var.resource_group
@@ -89,7 +88,6 @@ resource "azurerm_subnet" "gateway_subnet" {
   address_prefixes     = ["10.0.255.0/27"]  # Reserved for Gateway
 }
 
-# Create Public IP for VPN Gateway
 resource "azurerm_public_ip" "vpn-public-ip" {
   name                = "sealab-vpn-gateway-pip"
   location            = var.location
@@ -101,7 +99,6 @@ resource "azurerm_public_ip" "vpn-public-ip" {
   }
 }
 
-# Create Virtual Network Gateway for the P2S VPN
 resource "azurerm_virtual_network_gateway" "vpn-gateway" {
   name                = "azure-lab-vpn-gateway"
   location            = var.location
@@ -119,14 +116,14 @@ resource "azurerm_virtual_network_gateway" "vpn-gateway" {
   }
 
   vpn_client_configuration {
-    address_space = ["172.16.201.0/24"]  # VPN Client address pool
+    address_space = ["172.16.201.0/24"]  
 
     root_certificate {
       name             = "RootCert"
       public_cert_data = var.root_certificate_data
     }
 
-    vpn_client_protocols = ["SSTP"]  # Define VPN protocols
+    vpn_client_protocols = ["SSTP"]  
   }
 }
 
@@ -146,7 +143,7 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
   resource_group_name   = var.resource_group
   location              = var.location
   network_interface_ids = [azurerm_network_interface.linux-nic[each.key].id]
-  size                  = each.value.vm_size
+  size                  = each.value.size
   admin_username        = "adminuser"
   computer_name         = each.value.name
   disable_password_authentication = true
