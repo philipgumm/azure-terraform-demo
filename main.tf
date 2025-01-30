@@ -159,7 +159,7 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
+    public_key = var.ssh_public_key
   }
   
   source_image_reference {
