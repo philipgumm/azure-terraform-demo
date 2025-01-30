@@ -139,44 +139,34 @@ resource "azurerm_managed_disk" "linux_data_disk" {
   create_option        = "Empty"
 }
 
-resource "azurerm_virtual_machine" "linux_vm" {
+resource "azurerm_linux_virtual_machine" "linux_vm" {
   for_each = var.linux_vm_configurations
 
   name                  = each.value.name
   resource_group_name   = var.resource_group
   location              = var.location
   network_interface_ids = [azurerm_network_interface.linux-nic[each.key].id]
-  vm_size               = each.value.vm_size
-  delete_os_disk_on_termination = true
-  delete_data_disks_on_termination = true
+  size                  = each.value.vm_size
+  admin_username        = "adminuser"
+  computer_name         = each.value.name
+  disable_password_authentication = true
 
-  os_profile {
-    computer_name  = each.value.name
-    admin_username = var.local_windows_user
+  os_disk {
+    name                  = "${each.value.name}-osdisk"
+    caching               = "ReadWrite"
+    storage_account_type  = "Standard_LRS"
   }
 
-  os_profile_linux_config {
-    disable_password_authentication = true
-
-    ssh_keys {
-      path     = "/home/azureuser/.ssh/authorized_keys"
-      key_data = var.ssh_public_key
-    }
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = file("~/.ssh/id_rsa.pub")
   }
-
-  storage_image_reference {
-    publisher = "RedHat"
-    offer     = "RHEL"
-    sku       = "8-lvm-gen2"
+  
+  source_image_reference {
+    publisher = each.value.image_publisher
+    offer     = each.value.image_offer
+    sku       = each.value.image_sku
     version   = "latest"
-  }
-
-  storage_os_disk {
-    name              = "${each.key}-osdisk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-    
   }
 }
 
@@ -208,7 +198,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
   location              = var.location
   network_interface_ids = [azurerm_network_interface.windows-nic[each.key].id]
   size                  = each.value.size
-  admin_username        = var.local_windows_user
+  admin_username        = "adminuser"
   admin_password        = var.local_windows_password  
   computer_name         = each.value.name 
 
