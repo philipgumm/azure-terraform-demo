@@ -227,7 +227,7 @@ resource "azurerm_windows_virtual_machine" "windows_vm" {
 }
 
 resource "azurerm_virtual_machine_extension" "windows_base_script" {
-  for_each             = azurerm_virtual_machine.windows_vm
+  for_each             = azurerm_windows_virtual_machine.windows_vm
   name                 = "custom-script-extension-${each.key}"
   virtual_machine_id   = each.value.id
   publisher            = "Microsoft.Azure.Extensions"
@@ -245,10 +245,10 @@ SETTINGS
 }
 
 output "windows_vm_names" {
-  value = [for vm in azurerm_virtual_machine.windows_vm : vm.name]
+  value = [for vm in azurerm_windows_virtual_machine.windows_vm : vm.name]
 }
 
 output "linux_vm_names" {
-  value = [for vm in azurerm_virtual_machine.linux_vm : vm.name]
+  value = [for vm in azurerm_linux_virtual_machine.linux_vm : vm.name]
 }
 
