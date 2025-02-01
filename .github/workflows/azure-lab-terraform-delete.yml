@@ -45,7 +45,7 @@ jobs:
       run: terraform refresh
 
     - name: Terraform Plan Destroy
-      run: terraform plan -destroy -out=destroy.plan
+      run: terraform plan -lock=false -destroy -out=destroy.plan
 
     - name: Terraform Apply Destroy
-      run: terraform apply -auto-approve destroy.plan
+      run: terraform apply -auto-approve -lock=false destroy.plan
