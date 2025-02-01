@@ -24,7 +24,7 @@ terraform {
 provider "azurerm" {
   features {
     resource_group {
-      prevent_deletion_if_contains_resources = true
+      prevent_deletion_if_contains_resources = false
     }
      virtual_machine {
       delete_os_disk_on_deletion            = true
@@ -105,7 +105,7 @@ resource "azurerm_public_ip" "vpn-public-ip" {
 resource "azurerm_virtual_network_gateway" "vpn-gateway" {
   name                = "azure-lab-vpn-gateway"
   location            = var.location
-  resource_group_name = var.resource_group
+  resource_group_name = azurerm_resource_group.rg
   type                = "Vpn"
   vpn_type            = "RouteBased"
   active_active       = false
