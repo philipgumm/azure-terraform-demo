@@ -221,16 +221,16 @@ resource "azurerm_virtual_machine_extension" "windows_base_script" {
   for_each             = azurerm_windows_virtual_machine.windows_vm
   name                 = "custom-script-extension-${each.key}"
   virtual_machine_id   = each.value.id
-  publisher            = "Microsoft.Azure.Extensions"
+  publisher            = "Microsoft.Compute"
   type                 = "CustomScriptExtension"
-  type_handler_version = "2.0"
+  type_handler_version = "1.*"
   auto_upgrade_minor_version = true
 
   settings = <<SETTINGS
 {
   "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/base.ps1"],
-  "commandToExecute": "powershell.exe base.ps1",
-  "managedIdentity" : {"objectID": "16a77fc9-b28c-474f-8210-63a41f9c6e02"}
+  "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File base.ps1",
+  "managedIdentity" : {}
 }
 SETTINGS
 }
