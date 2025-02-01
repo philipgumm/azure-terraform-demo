@@ -23,6 +23,9 @@ terraform {
 
 provider "azurerm" {
   features {
+    resource_group {
+      prevent_deletion_if_contains_resources = true
+    }
      virtual_machine {
       delete_os_disk_on_deletion            = true
     }
@@ -224,7 +227,7 @@ resource "azurerm_virtual_machine_extension" "windows_base_script" {
 
   settings = <<SETTINGS
 {
-  "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/azure-terraform-demo/base.ps1"],
+  "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/base.ps1"],
   "commandToExecute": "powershell.exe base.ps1",
   "managedIdentity" : {"objectID": "16a77fc9-b28c-474f-8210-63a41f9c6e02"}
 }
