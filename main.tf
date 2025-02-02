@@ -134,6 +134,8 @@ resource "azurerm_virtual_network_gateway" "vpn-gateway" {
 }
 
 resource "azurerm_managed_disk" "linux_data_disk" {
+  for_each = var.linux_vm_configurations
+  
   name                 = "${each.value.name}-data-disk"
   location             = var.location
   resource_group_name  = var.resource_group

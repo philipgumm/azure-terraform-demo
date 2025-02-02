@@ -27,7 +27,7 @@ linux_vm_configurations = {
 windows_vm_configurations = {
   windows_vm = {
     name            = "web-win-srv"
-    size         = "Standard_B2ms"
+    size            = "Standard_B2ms"
     os              = "Windows"
     image_publisher = "MicrosoftWindowsServer"
     image_offer     = "WindowsServer"
@@ -35,7 +35,7 @@ windows_vm_configurations = {
   }
     windows_vm2 = {
     name            = "dbs-win-srv"
-    size         = "Standard_B2ms"
+    size            = "Standard_B2ms"
     os              = "Windows"
     image_publisher = "MicrosoftWindowsServer"
     image_offer     = "WindowsServer"
