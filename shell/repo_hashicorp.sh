@@ -14,3 +14,4 @@ dnf repolist
 sudo dnf5 install terraform
 
 terraform --version
+

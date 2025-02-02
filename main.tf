@@ -101,12 +101,14 @@ resource "azurerm_public_ip" "vpn-public-ip" {
   lifecycle {
       create_before_destroy = true
   }
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 resource "azurerm_virtual_network_gateway" "vpn-gateway" {
   name                = "azure-lab-vpn-gateway"
   location            = var.location
-  resource_group_name = azurerm_resource_group.rg.name
+  resource_group_name = var.resource_group
   type                = "Vpn"
   vpn_type            = "RouteBased"
   active_active       = false
@@ -138,6 +140,8 @@ resource "azurerm_managed_disk" "linux_data_disk" {
   storage_account_type = "Standard_LRS"
   disk_size_gb         = 50
   create_option        = "Empty"
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 resource "azurerm_linux_virtual_machine" "linux_vm" {
@@ -169,6 +173,12 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
     sku       = each.value.image_sku
     version   = "latest"
   }
+
+  plan {
+    name      = each.value.image_sku
+    publisher = each.value.image_publisher
+    product   = each.value.image_offer
+  }
 }
 
 resource "azurerm_managed_disk" "windows_data_disks" {
@@ -180,6 +190,8 @@ resource "azurerm_managed_disk" "windows_data_disks" {
   storage_account_type = "Standard_LRS"
   disk_size_gb         = 50
   create_option        = "Empty"
+
+  depends_on = [azurerm_resource_group.rg]
 }
 
 resource "azurerm_virtual_machine_data_disk_attachment" "windows-attach-disk" {
@@ -189,6 +201,7 @@ resource "azurerm_virtual_machine_data_disk_attachment" "windows-attach-disk" {
   virtual_machine_id = azurerm_windows_virtual_machine.windows_vm[each.key].id
   lun                = 0
   caching            = "ReadWrite"
+
 }
 
 resource "azurerm_windows_virtual_machine" "windows_vm" {
@@ -223,7 +236,7 @@ resource "azurerm_virtual_machine_extension" "windows_base_script" {
   virtual_machine_id   = each.value.id
   publisher            = "Microsoft.Compute"
   type                 = "CustomScriptExtension"
-  type_handler_version = "1.*"
+  type_handler_version = "1.10"
   auto_upgrade_minor_version = true
 
   settings = <<SETTINGS

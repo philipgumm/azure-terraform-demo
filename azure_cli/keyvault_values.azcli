@@ -1,0 +1,2 @@
+az keyvault create --name <KeyVaultName> --resource-group <ResourceGroupName> --location <Location>
+
