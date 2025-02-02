@@ -68,20 +68,20 @@ jobs:
         run: | 
           terraform apply -auto-approve -lock=false -no-color
 
-      - name: Save Windows Server Names
-        run: terraform output -json windows_server_names > windows_server_names.json
+      - name: Save Windows VM Names
+        run: terraform output -json windows_vm_names > windows_vm_names.json
   
-      - name: Save Linux Server Names
-        run: terraform output -json linux_server_names > linux_server_names.json
+      - name: Save Linux VM Names
+        run: terraform output -json linux_vm_names > linux_vm_names.json
 
-      - name: Upload Windows Server Names
+      - name: Upload Windows VM Names
         uses: actions/upload-artifact@v4
         with:
-          name: windows_server_names
-          path: windows_server_names.json
+          name: windows_vm_names
+          path: windows_vm_names.json
   
-      - name: Upload Linux Server Names
+      - name: Upload Linux VM Names
         uses: actions/upload-artifact@v4
         with:
-          name: linux_server_names
-          path: linux_server_names.json
+          name: linux_vm_names
+          path: linux_vm_names.json

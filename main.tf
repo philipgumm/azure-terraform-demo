@@ -134,7 +134,7 @@ resource "azurerm_virtual_network_gateway" "vpn-gateway" {
 }
 
 resource "azurerm_managed_disk" "linux_data_disk" {
-  name                 = "linux-data-disk"
+  name                 = "${each.value.name}-data-disk"
   location             = var.location
   resource_group_name  = var.resource_group
   storage_account_type = "Standard_LRS"
@@ -184,7 +184,7 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
 resource "azurerm_managed_disk" "windows_data_disks" {
   for_each = var.windows_vm_configurations
 
-  name                 = "${each.value.name}-windows-data-disk"
+  name                 = "${each.value.name}-data-disk"
   location             = var.location
   resource_group_name  = var.resource_group
   storage_account_type = "Standard_LRS"
