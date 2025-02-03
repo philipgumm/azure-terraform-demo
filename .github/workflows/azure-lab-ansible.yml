@@ -1,4 +1,4 @@
-name: "Ansible Configuration Deploy"
+name: "Azure Ansible Deployment"
 on:
   workflow_dispatch:
 

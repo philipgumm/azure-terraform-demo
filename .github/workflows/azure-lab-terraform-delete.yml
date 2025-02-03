@@ -1,4 +1,4 @@
-name: Terraform Destroy for Azure
+name: "Azure Terraform Destroy" 
 
 on:
   schedule:
