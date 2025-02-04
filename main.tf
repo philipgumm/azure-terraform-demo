@@ -115,7 +115,7 @@ data "azurerm_key_vault" "azure-terraform-demo-kv" {
 }
 
 data "azurerm_key_vault_secret" "vpn_root_cert" {
-  name         = "azure-terraform-demo"
+  name         = "azure-terraform-demo-root"
   key_vault_id = data.azurerm_key_vault.azure-terraform-demo-kv.id
 }
 
