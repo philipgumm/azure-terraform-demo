@@ -1,4 +1,4 @@
-name: Deploy DSC Script
+name: "Azure DSC Deployment"
 
 on:
   workflow_dispatch:

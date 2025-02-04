@@ -28,7 +28,6 @@ New-NetFirewallRule -DisplayName "Allow WinRM" -Direction Inbound -Protocol TCP 
 New-Item -Path C:\ -ItemType Directory -Name CheckDir
 New-Item -Path C:\CheckDir -Name Check.txt
 Add-Content -Path C:\CheckDir\Check.txt -Value "$env:computername"
-# Invoke-WebRequest -Uri $filepath -OutFile C:\\temp\\script.ps1; C:\\temp\\script.ps1\""
 
 # Setup complete
 Write-Host "Initialization complete!"

@@ -23,6 +23,14 @@ variable "sea-terraform" {
   description = "The Azure Region in which all resources in this example should be created."
 }
 
+variable "keyvault_name" {
+  description = "root certificate key vault"
+}
+
+variable "LabManagement-rg" {
+  description = "resource group name for external management resources"
+}
+
 variable "location" {
   description = "The Azure Region in which all resources in this example should be created."
 }

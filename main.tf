@@ -105,6 +105,16 @@ resource "azurerm_public_ip" "vpn-public-ip" {
   depends_on = [azurerm_resource_group.rg]
 }
 
+data "azurerm_key_vault" "azure-terraform-demo-kv" {
+  name                = "azure-terraform-demo-kv"
+  resource_group_name = "external-rg"
+}
+
+data "azurerm_key_vault_secret" "vpn_root_cert" {
+  name         = "azure-terraform-vpn-root-cert"
+  key_vault_id = azurerm_key_vault.azure-terraform-demo-kv.id
+}
+
 resource "azurerm_virtual_network_gateway" "vpn-gateway" {
   name                = "azure-lab-vpn-gateway"
   location            = var.location
@@ -125,8 +135,8 @@ resource "azurerm_virtual_network_gateway" "vpn-gateway" {
     address_space = ["172.16.201.0/24"]  
 
     root_certificate {
-      name             = "RootCert"
-      public_cert_data = var.root_certificate_data
+      name             = "MyRootCert"
+      public_cert_data = data.azurerm_key_vault_secret.vpn_root_cert.value
     }
 
     vpn_client_protocols = ["SSTP"]  

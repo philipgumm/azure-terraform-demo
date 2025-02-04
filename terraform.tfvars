@@ -12,6 +12,10 @@ rg-hon = "dev-hon-rg"
 
 rg-sin = "dev-sin-rg"
 
+keyvault_name = "azure-terraform-demo-kv"
+
+LabManagement-rg = "LabManagement"
+
 linux_vm_configurations = {
   linux_vm = {
     name            = "app-lin-srv"
