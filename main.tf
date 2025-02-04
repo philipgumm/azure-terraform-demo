@@ -6,11 +6,12 @@ terraform {
     storage_account_name = "labmanagementstorage01"
     container_name       = "azure-terraform-demo"                               
     key                  = "terraform.tfstate"                
-    use_oidc             = true                                    
+                                       
     client_id            = "cb96e845-aa06-4954-b93c-ccf03f6353b5"  
     subscription_id      = "357a5cd3-a5ef-489c-b770-7bbae655337c"  
     tenant_id            = "1b4c23c2-2d33-4a53-ad59-3190309565e2"  
-    use_azuread_auth     = true                                    
+    use_azuread_auth     = true 
+    use_oidc             = true                                    
   }
 
   required_providers {
@@ -23,12 +24,15 @@ terraform {
 
 provider "azurerm" {
   features {
+    
     resource_group {
       prevent_deletion_if_contains_resources = false
     }
+     
      virtual_machine {
       delete_os_disk_on_deletion            = true
     }
+
   }
       client_id = var.azure_client_id
       client_secret = var.azure_client_secret
@@ -89,7 +93,7 @@ resource "azurerm_subnet" "gateway_subnet" {
   name                 = "GatewaySubnet"
   resource_group_name  = var.resource_group
   virtual_network_name = azurerm_virtual_network.network.name
-  address_prefixes     = ["10.0.255.0/27"]  # Reserved for Gateway
+  address_prefixes     = ["10.0.255.0/27"]  
 }
 
 resource "azurerm_public_ip" "vpn-public-ip" {
@@ -106,7 +110,7 @@ resource "azurerm_public_ip" "vpn-public-ip" {
 }
 
 data "azurerm_key_vault" "azure-terraform-demo-kv" {
-  name                = "azure-terraform-demo-kv"
+  name                = "azure-terraform-demo-root-certificate"
   resource_group_name = var.LabManagement-rg
 }
 
