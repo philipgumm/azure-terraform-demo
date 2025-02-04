@@ -114,8 +114,8 @@ data "azurerm_key_vault" "azure-terraform-demo-kv" {
   resource_group_name = var.LabManagement-rg
 }
 
-data "azurerm_key_vault_secret" "vpn_root_cert" {
-  name         = "azure-terraform-demo-cert"
+data "azurerm_key_vault_certificate" "vpn_root_cert" {
+  name         = "rootcert-azure-terraform-demo"
   key_vault_id = data.azurerm_key_vault.azure-terraform-demo-kv.id
 }
 
@@ -140,7 +140,7 @@ resource "azurerm_virtual_network_gateway" "vpn-gateway" {
 
     root_certificate {
       name             = "MyRootCert"
-      public_cert_data = data.azurerm_key_vault_secret.vpn_root_cert.value
+      public_cert_data = data.azurerm_key_vault_secret.vpn_root_cert.certificate_data
     }
 
     vpn_client_protocols = ["SSTP"]  
