@@ -107,7 +107,7 @@ resource "azurerm_public_ip" "vpn-public-ip" {
 
 data "azurerm_key_vault" "azure-terraform-demo-kv" {
   name                = "azure-terraform-demo-kv"
-  resource_group_name = "external-rg"
+  resource_group_name = var.LabManagement-rg
 }
 
 data "azurerm_key_vault_secret" "vpn_root_cert" {
