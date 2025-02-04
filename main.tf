@@ -110,12 +110,12 @@ resource "azurerm_public_ip" "vpn-public-ip" {
 }
 
 data "azurerm_key_vault" "azure-terraform-demo-kv" {
-  name                = "azure-terraform-demo"
+  name                = "azure-terraform-demo-kv"
   resource_group_name = var.LabManagement-rg
 }
 
 data "azurerm_key_vault_secret" "vpn_root_cert" {
-  name         = "azure-terraform-vpn-root-cert"
+  name         = "azure-terraform-demo"
   key_vault_id = data.azurerm_key_vault.azure-terraform-demo-kv.id
 }
 
