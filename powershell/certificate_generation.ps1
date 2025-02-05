@@ -2,9 +2,14 @@
 
 # initial root certificate - to be exported to Azure 
 $cert = New-SelfSignedCertificate -Type Custom -KeySpec Signature `
--Subject "CN=P2SRootCert_v2" -KeyExportPolicy Exportable `
--HashAlgorithm sha256 -KeyLength 2048 `
--CertStoreLocation "Cert:\CurrentUser\My" -KeyUsageProperty Sign -KeyUsage CertSign
+-Subject "CN=P2SRootCert_v2" `
+-KeyExportPolicy Exportable `
+-HashAlgorithm sha256 `
+-KeyLength 2048 `
+-CertStoreLocation "Cert:\CurrentUser\My" `
+-NotAfter = (Get-Date).AddMonths(24) `
+-KeyUsageProperty Sign `
+-KeyUsage CertSign 
 
 # Create client certificate - stored in certificate store
 New-SelfSignedCertificate -Type Custom -DnsName P2SChildCert -KeySpec Signature `
@@ -35,3 +40,11 @@ $([Convert]::ToBase64String($certificate.Export('Cert'), [System.Base64Formattin
 -----END CERTIFICATE-----
 "@
 Set-Content -Path "C:\Certs\P2SRootCert_PFX_v2.cer" -Value $base64certificate
+
+# As a reminder: Create Root Certification with private key > Create Client Certificate with private key 
+# Export the Root Certificate as CER without the private key and convert it to text. Upload into Terraform of Key Vault
+# Install the Client Certificate or Export it with private key if you want to run it on another machine. 
+
+# https://docs.azure.cn/en-us/vpn-gateway/point-to-site-certificates-linux-openssl
+# https://docs.azure.cn/en-us/vpn-gateway/vpn-gateway-certificates-point-to-site
+
