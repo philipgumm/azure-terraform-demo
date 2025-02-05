@@ -140,7 +140,7 @@ resource "azurerm_virtual_network_gateway" "vpn-gateway" {
 
     root_certificate {
       name             = "MyRootCert"
-      public_cert_data = data.azurerm_key_vault_certificate_data.vpn_root_cert.certificate_data
+      public_cert_data = data.azurerm_key_vault_certificate.vpn_root_cert.certificate_data_base64
 
     }
 
