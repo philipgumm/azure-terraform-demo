@@ -18,6 +18,9 @@ variable "azure_subscription_id" {
   description = "The subscription ID in which the resources will be created."
 }
 
+variable "root_certificate" {
+  description = "The root certificate for the VPN gateway"
+}
 
 variable "sea-terraform" {
   description = "The Azure Region in which all resources in this example should be created."
