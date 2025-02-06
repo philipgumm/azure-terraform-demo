@@ -18,18 +18,10 @@ New-Item -Path C:\ -ItemType Directory -Name CheckDir
 New-Item -Path C:\CheckDir -Name Check.txt
 Add-Content -Path C:\CheckDir\Check.txt -Value "$env:computername"
 
-# Install Windows Updates
-Write-Host "Installing Windows Updates..."
-Install-PackageProvider -Name NuGet -Force
-Install-Module -Name PSWindowsUpdate -Force
-Import-Module PSWindowsUpdate
-Get-WindowsUpdate -Install -AcceptAll 
-
 # Configure Time Zone
 Write-Host "Configuring time zone..."
 Set-TimeZone -Id "Singapore Standard Time"
 # Setup complete
-Write-EventLog -LogName "Application" -Source "BasePS1" -EventID 3001 -EntryType Information -Message "PowerShell Base script completed." -Category 1 -RawData 10,20
 Write-Host "Initialization complete!"
 
 Stop-Transcript
