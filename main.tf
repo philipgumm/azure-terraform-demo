@@ -259,7 +259,7 @@ resource "azurerm_virtual_machine_extension" "windows_base_script" {
   settings = <<SETTINGS
 {
   "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/base.ps1"],
-  "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File base.ps1",
+  "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File ./base.ps1",
   "managedIdentity" : {}
 }
 SETTINGS

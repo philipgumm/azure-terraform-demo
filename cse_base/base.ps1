@@ -1,5 +1,8 @@
 # init.ps1 - Windows Server Initialization Script
 
+Start-Transcript -Path C:\Windows\Temp\base_script.log -Append
+Write-Output "Custom Script Execution Started"
+
 # Enable WinRM for remote management
 Write-Host "Enabling WinRM for remote management..."
 Set-Item -Path WSMan:\localhost\Service\AllowUnencrypted -Value $true
@@ -29,4 +32,5 @@ Set-TimeZone -Id "Singapore Standard Time"
 Write-EventLog -LogName "Application" -Source "BasePS1" -EventID 3001 -EntryType Information -Message "PowerShell Base script completed." -Category 1 -RawData 10,20
 Write-Host "Initialization complete!"
 
+Stop-Transcript
 Restart-Computer -Force
