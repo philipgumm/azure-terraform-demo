@@ -287,7 +287,7 @@ output "inventory_json" {
       children = {
         linux = {
           hosts = {
-            for vm in azurerm_linux_virtual_machine.linux_vms :
+            for vm in azurerm_linux_virtual_machine.linux_vm :
             vm.name => {
               ansible_host = vm.public_ip_address
               ansible_user = "azureuser"
@@ -297,7 +297,7 @@ output "inventory_json" {
         },
         windows = {
           hosts = {
-            for vm in azurerm_windows_virtual_machine.windows_vms :
+            for vm in azurerm_windows_virtual_machine.windows_vm :
             vm.name => {
               ansible_host = vm.public_ip_address
               ansible_user = "Administrator"
