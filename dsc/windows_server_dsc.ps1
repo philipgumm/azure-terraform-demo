@@ -3,9 +3,9 @@ Configuration TestConfiguration {
     
     # Import the required DSC resources
     
-    Install-Module -ModuleName PSDesiredStateConfiguration -Force
+    Find-Module PSDesiredStateConfiguration | Install-Module -Force
     
-    Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DSCResource -ModuleName PSDesiredStateConfiguration
 
     # Node to configure (can use 'localhost' for testing locally)
     Node localhost {
