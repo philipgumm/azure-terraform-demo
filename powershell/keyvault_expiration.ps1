@@ -26,5 +26,5 @@ Get-AzKeyVaultSecret -VaultName $vault -Name $secretName -AsPlainText
 
 Get-AzKeyVaultCertificate -VaultName "<your-key-vault-name>" -Name "ExampleCertificate"
 
-$Password = ConvertTo-SecureString -String "123" -AsPlainText -Force
-Import-AzKeyVaultCertificate -VaultName "<your-key-vault-name>" -Name "ExampleCertificate" -FilePath "C:\path\to\ExampleCertificate.pem" -Password $Password
+$Password = ConvertTo-SecureString -String "xxx" -AsPlainText -Force
+Import-AzKeyVaultCertificate -VaultName $ -Name $ -FilePath $ -Password $Password

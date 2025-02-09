@@ -68,20 +68,13 @@ jobs:
         run: | 
           terraform apply -auto-approve -lock=false -no-color
 
-      - name: Save Windows VM Names
-        run: terraform output -json windows_vm_names > windows_vm_names.json
+      - name: Get Terraform Outputs
+        id: tf_outputs
+        run: |
+          echo "$(terraform output -raw ansible_inventory)" > inventory.json
   
-      - name: Save Linux VM Names
-        run: terraform output -json linux_vm_names > linux_vm_names.json
-
-      - name: Upload Windows VM Names
+      - name: Upload Windows & Linux Inventory Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: windows_vm_names
-          path: windows_vm_names.json
-  
-      - name: Upload Linux VM Names
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux_vm_names
-          path: linux_vm_names.json
+          name: server-inventory
+          path: inventory.json

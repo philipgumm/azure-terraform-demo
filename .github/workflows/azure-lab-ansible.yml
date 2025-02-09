@@ -1,9 +1,35 @@
 name: "Azure Ansible Deployment"
+
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual trigger
+  push:
+    branches:
+      - main  # Runs when code is pushed to main
 
 jobs:
-  terraform:
-    name: "Terraform"
+  ansible-deploy:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
+      - name: Generate Ansible Inventory
+        run: |
+          echo "[webservers]" > inventory.ini
+          echo "$(terraform output -raw vm_ip) ansible_user=ansibleadmin" >> inventory.ini
+          cat inventory.ini
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H <fedora-vm-ip> >> ~/.ssh/known_hosts
+
+      - name: Run Ansible Playbook
+        run: ansible-playbook -i server_list.ini playbook.yml

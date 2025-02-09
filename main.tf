@@ -265,11 +265,51 @@ resource "azurerm_virtual_machine_extension" "windows_base_script" {
 SETTINGS
 }
 
-output "windows_vm_names" {
-  value = [for vm in azurerm_windows_virtual_machine.windows_vm : vm.name]
+resource "azurerm_virtual_machine_extension" "cse_ansible" {
+  for_each             = azurerm_linux_virtual_machine.linux_vm
+  name                 = "linux-ansible-setup"
+  virtual_machine_id   = each.value.id
+  publisher            = "Microsoft.Azure.Extensions"
+  type                 = "CustomScript"
+  type_handler_version = "2.1"
+
+  settings = <<SETTINGS
+  {
+    "fileUris": ["https://<storage_account>.blob.core.windows.net/<container_name>/install_ansible.sh"],
+    "commandToExecute": "bash install_ansible.sh"
+  }
+  SETTINGS
 }
 
-output "linux_vm_names" {
-  value = [for vm in azurerm_linux_virtual_machine.linux_vm : vm.name]
+output "inventory_json" {
+  value = jsonencode({
+    all = {
+      children = {
+        linux = {
+          hosts = {
+            for vm in azurerm_linux_virtual_machine.linux_vms :
+            vm.name => {
+              ansible_host = vm.public_ip_address
+              ansible_user = "azureuser"
+              ansible_ssh_private_key_file = "~/.ssh/id_rsa"
+            }
+          }
+        },
+        windows = {
+          hosts = {
+            for vm in azurerm_windows_virtual_machine.windows_vms :
+            vm.name => {
+              ansible_host = vm.public_ip_address
+              ansible_user = "Administrator"
+              ansible_connection = "winrm"
+              ansible_winrm_transport = "ntlm"
+              ansible_winrm_server_cert_validation = "ignore"
+            }
+          }
+        }
+      }
+    }
+  })
 }
+
 

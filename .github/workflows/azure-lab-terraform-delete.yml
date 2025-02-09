@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "0 18 * * *" # Runs every Sunday at midnight UTC
   workflow_dispatch: # Manual trigger
+  workflow_run:
+    workflows: ["Azure Terraform Create"]
+    types:
+      - completed
+
 
 permissions:
       id-token: write
@@ -21,6 +26,7 @@ env:
 jobs:
   terraform-destroy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
 
     steps:
     - name: Checkout repository

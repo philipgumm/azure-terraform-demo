@@ -1,52 +1,40 @@
-name: "Azure DSC Deployment"
+name: Azure DSC Windows Deployment
 
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Azure Terraform Create"]
+    types:
+      - completed
 
 jobs:
-  deploy-dsc:
+  deploy_windows_dsc:
     runs-on: windows-latest
 
-    env:
-      local_windows_user: ${{ secrets.local_windows_password}}
-      local_windows_password: ${{ secrets.LOCAL_WINDOWS_PASSWORD }}
-
     steps:
-    # Check out the repository
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    # Install PowerShell Modules (if needed)
-    - name: Install PowerShell modules
-      shell: pwsh  
-      run: |
-        Install-Module -Name PSWSMan -Force -SkipPublisherCheck
-        Install-Module -Name PSDesiredStateConfiguration -Force -SkipPublisherCheck
-      
+      - name: Download JSON Inventory
+        uses: actions/download-artifact@v4
+        with:
+          name: ansible-inventory
+          path: .
 
-    # Execute the DSC script on the remote server
-    - name: Invoke DSC remotely
-      run: |
-        $vmNames = Get-Content -Path "./windows_server_names.json" | ConvertFrom-Json  
-      
-        foreach ($vmName in $vmNames) {
+      - name: Apply DSC Configuration
+        shell: pwsh
+        run: |
+          $inventory = Get-Content inventory.json | ConvertFrom-Json
+          $windowsHosts = $inventory.all.children.windows.hosts
 
-        # Test-WSMan -ComputerName $vmName
+          foreach ($host in $windowsHosts.PSObject.Properties) {
+              $hostname = $host.Name
+              $hostDetails = $host.Value
+              $ip = $hostDetails.ansible_host
+              Write-Host "Applying DSC Configuration on $hostname ($ip)"
 
-        $server = $vmName
-        $username = ConvertTo-SecureString -String ${{ secrets.local_windows_user }} -AsPlainText -Force
-        $password = ConvertTo-SecureString -String ${{ secrets.local_windows_password }} -AsPlainText -Force
-        $credential = New-Object System.Management.Automation.PSCredential($username, $password)
-
-        $dscScriptPath = "${{ github.workspace }}\dsc\windows_server_dsc.ps1"
-
-        Invoke-Command -ComputerName $server -Credential $credential -ScriptBlock {
-            param ($dscScriptPath)
-            & PowerShell -File $dscScriptPath
-        } -ArgumentList $dscScriptPath
-
-        }
-
-
-
-      shell: pwsh
+              Invoke-Command -ComputerName $ip -Credential (Get-Credential) -ScriptBlock {
+                  Write-Host "Applying DSC..."
+                  Start-DscConfiguration -Path "C:\DSCConfigs" -Wait -Verbose -Force
+              }
+          }
