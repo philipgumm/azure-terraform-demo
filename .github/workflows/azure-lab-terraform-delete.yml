@@ -1,5 +1,5 @@
 name: "Azure Terraform Destroy" 
-
+# Need to run something to unlock the state file
 on:
   schedule:
     - cron: "0 18 * * *" # Runs every Sunday at midnight UTC
@@ -44,8 +44,27 @@ jobs:
       with:
         terraform_version: 1.6.0 
 
-    - name: Terraform Init
-      run: terraform init
+    - name: Get Terraform State Lock ID
+      id: get_lock
+      continue-on-error: true
+      run: |
+          terraform init
+          terraform providers lock -json | jq -r '.lock_id' > lock_id.txt
+          cat lock_id.txt
+
+    - name: Unlock Terraform State (if locked)
+      if: ${{ steps.get_lock.outcome == 'success' }}
+      run: |
+          LOCK_ID=$(cat lock_id.txt)
+          if [[ ! -z "$LOCK_ID" ]]; then
+            echo "Unlocking Terraform state..."
+            terraform force-unlock -force "$LOCK_ID"
+          else
+            echo "No lock detected, proceeding with destroy."
+          fi
+          
+ #   - name: Terraform Init
+ #     run: terraform init
 
     - name: Pull Current State 
       run: terraform refresh
