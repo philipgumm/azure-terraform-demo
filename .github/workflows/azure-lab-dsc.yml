@@ -18,7 +18,7 @@ jobs:
       - name: Download JSON Inventory
         uses: actions/download-artifact@v4
         with:
-          name: ansible-inventory
+          name: server-inventory
           path: .
 
       - name: Apply DSC Configuration
@@ -31,10 +31,16 @@ jobs:
               $hostname = $host.Name
               $hostDetails = $host.Value
               $ip = $hostDetails.ansible_host
-              Write-Host "Applying DSC Configuration on $hostname ($ip)"
+              Write-Host "Deploying DSC to $hostname ($ip)"
 
+              # Copy DSC script from repo to remote server
+              Write-Host "Copying DSC script to $hostname..."
+              Copy-Item -Path dsc/windows_server_dsc.ps1 -Destination "\\$ip\C$\Temp\windows_server_dsc.ps1" -Force
+
+              # Run DSC Configuration remotely
               Invoke-Command -ComputerName $ip -Credential (Get-Credential) -ScriptBlock {
-                  Write-Host "Applying DSC..."
-                  Start-DscConfiguration -Path "C:\DSCConfigs" -Wait -Verbose -Force
-              }
+                  param ($dscScript)
+                  Write-Host "Applying DSC Configuration..."
+                  & "C:\Temp\$dscScript"
+              } -ArgumentList "windows_server_dsc.ps1"
           }

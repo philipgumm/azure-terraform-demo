@@ -8,4 +8,6 @@ Task List:
 3. Use the public cert on the azure virtual gateway
 4. Export the client certificate and install on Fedora and Windows 
 
+5. Egress Terraform logs to Azure Monitor
+
 

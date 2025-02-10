@@ -1,14 +1,10 @@
 #!/bin/bash
-
-
 sudo dnf install -y epel-release
 
 sudo dnf update -y
 sudo dnf install -y ansible
 
-
 ansible --version
-
 
 sudo systemctl enable sshd
 sudo systemctl start sshd
