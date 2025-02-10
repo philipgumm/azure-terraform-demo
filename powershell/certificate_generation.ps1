@@ -2,18 +2,18 @@
 
 # initial root certificate - to be exported to Azure 
 $cert = New-SelfSignedCertificate -Type Custom -KeySpec Signature `
--Subject "CN=P2SRootCert_v2" `
+-Subject "CN=P2SRootCert" `
 -KeyExportPolicy Exportable `
 -HashAlgorithm sha256 `
 -KeyLength 2048 `
 -CertStoreLocation "Cert:\CurrentUser\My" `
--NotAfter = (Get-Date).AddMonths(24) `
+-NotAfter (Get-Date).AddMonths(24) `
 -KeyUsageProperty Sign `
 -KeyUsage CertSign 
 
 # Create client certificate - stored in certificate store
 New-SelfSignedCertificate -Type Custom -DnsName P2SChildCert -KeySpec Signature `
--Subject "CN=P2SChildCert_v2" -KeyExportPolicy Exportable `
+-Subject "CN=P2SChildCert" -KeyExportPolicy Exportable `
 -HashAlgorithm sha256 -KeyLength 2048 ` -CertStoreLocation "Cert:\CurrentUser\My" `
 -Signer $cert -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.2")
 
@@ -40,6 +40,8 @@ $([Convert]::ToBase64String($certificate.Export('Cert'), [System.Base64Formattin
 -----END CERTIFICATE-----
 "@
 Set-Content -Path "C:\Certs\P2SRootCert_PFX_v2.cer" -Value $base64certificate
+
+# This is why you have to do it in Terraform now.
 
 # As a reminder: Create Root Certification with private key > Create Client Certificate with private key 
 # Export the Root Certificate as CER without the private key and convert it to text. Upload into Terraform of Key Vault

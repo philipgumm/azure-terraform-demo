@@ -73,8 +73,10 @@ jobs:
         run: |
           echo "$(terraform output -raw ansible_inventory)" > inventory.json
   
-      - name: Upload Windows & Linux Inventory Artifact
+      - name: Upload Windows & Linux Inventory Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: server-inventory
           path: inventory.json
+
+          

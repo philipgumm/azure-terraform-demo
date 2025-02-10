@@ -2,9 +2,7 @@ name: "Azure Ansible Deployment"
 
 on:
   workflow_dispatch: # Allows manual trigger
-  push:
-    branches:
-      - main  # Runs when code is pushed to main
+
 
 jobs:
   ansible-deploy:

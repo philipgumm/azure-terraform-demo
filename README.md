@@ -9,5 +9,11 @@ Task List:
 4. Export the client certificate and install on Fedora and Windows 
 
 5. Egress Terraform logs to Azure Monitor
+6. Write KQL queries 
 
+Feature List:
+
+
+
+Improvement List:
 
