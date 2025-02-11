@@ -259,7 +259,7 @@ resource "azurerm_virtual_machine_extension" "windows_base_script" {
   settings = <<SETTINGS
 {
   "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/base.ps1"],
-  "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File .\\windows_base.ps1",
+  "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File ./windows_base.ps1",
   "managedIdentity" : {}
 }
 SETTINGS
@@ -276,7 +276,7 @@ resource "azurerm_virtual_machine_extension" "cse_ansible" {
   settings = <<SETTINGS
   {
     "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/linux_base.sh"],
-    "commandToExecute": "bash linux_base.sh"
+    "commandToExecute": "bash ./linux_base.sh"
   }
   SETTINGS
 }
