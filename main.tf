@@ -7,8 +7,10 @@ terraform {
     container_name       = "azure-terraform-demo"                               
     key                  = "terraform.tfstate"                
                                        
-    use_azuread_auth      = true 
-    use_oidc              = true                                    
+    client_id            = "cb96e845-aa06-4954-b93c-ccf03f6353b5"  
+    subscription_id      = "357a5cd3-a5ef-489c-b770-7bbae655337c"  
+    tenant_id            = "1b4c23c2-2d33-4a53-ad59-3190309565e2"  
+    use_oidc             = true                                    
   }
 
   required_providers {
@@ -57,6 +59,7 @@ resource "azurerm_subnet" "internal" {
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.0.2.0/24"]
 }
+
 
 
 resource "azurerm_network_interface" "linux-nic" {
