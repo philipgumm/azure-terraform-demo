@@ -259,15 +259,15 @@ resource "azurerm_virtual_machine_extension" "windows_base_script" {
   settings = <<SETTINGS
 {
   "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/base.ps1"],
-  "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File ./windows_base.ps1",
+  "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File C:\\windows_base.ps1",
   "managedIdentity" : {}
 }
 SETTINGS
 }
 
-resource "azurerm_virtual_machine_extension" "cse_ansible" {
+resource "azurerm_virtual_machine_extension" "linux_base_script" {
   for_each             = azurerm_linux_virtual_machine.linux_vm
-  name                 = "linux-ansible-setup"
+  name                 = "custom-script-extension-${each.key}"
   virtual_machine_id   = each.value.id
   publisher            = "Microsoft.Azure.Extensions"
   type                 = "CustomScript"
