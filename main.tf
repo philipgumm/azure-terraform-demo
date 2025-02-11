@@ -7,9 +7,6 @@ terraform {
     container_name       = "azure-terraform-demo"                               
     key                  = "terraform.tfstate"                
                                        
-    client_id             = var.azure_client_id 
-    subscription_id       = var.azure_subscription_id
-    tenant_id             = var.azure_tenant_id
     use_azuread_auth      = true 
     use_oidc              = true                                    
   }
@@ -277,7 +274,7 @@ resource "azurerm_virtual_machine_extension" "linux_base_script" {
   settings = <<SETTINGS
   {
     "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/linux_base.sh"],
-    "commandToExecute": "bash linux_base.sh"
+    "commandToExecute": "chmod +x bash linux_base.sh"
   }
   SETTINGS
 }
