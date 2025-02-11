@@ -7,11 +7,11 @@ terraform {
     container_name       = "azure-terraform-demo"                               
     key                  = "terraform.tfstate"                
                                        
-    client_id            = "cb96e845-aa06-4954-b93c-ccf03f6353b5"  
-    subscription_id      = "357a5cd3-a5ef-489c-b770-7bbae655337c"  
-    tenant_id            = "1b4c23c2-2d33-4a53-ad59-3190309565e2"  
-    use_azuread_auth     = true 
-    use_oidc             = true                                    
+    client_id             = var.azure_client_id 
+    subscription_id       = var.azure_subscription_id
+    tenant_id             = var.azure_tenant_id
+    use_azuread_auth      = true 
+    use_oidc              = true                                    
   }
 
   required_providers {
