@@ -61,6 +61,28 @@ resource "azurerm_subnet" "internal" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
+resource "azurerm_network_security_group" "example" {
+  name                = "acceptanceTestSecurityGroup1"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+
+  security_rule {
+    name                       = "test123"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  tags = {
+    environment = "Production"
+  }
+}
+
 resource "azurerm_network_interface" "linux-nic" {
   for_each = var.linux_vm_configurations
 
@@ -259,7 +281,7 @@ resource "azurerm_virtual_machine_extension" "windows_base_script" {
   settings = <<SETTINGS
 {
   "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/windows_base.ps1"],
-  "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File C:\\windows_base.ps1",
+  "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -NoProfile -NonInteractive -File windows_base.ps1",
   "managedIdentity" : {}
 }
 SETTINGS
@@ -276,7 +298,7 @@ resource "azurerm_virtual_machine_extension" "linux_base_script" {
   settings = <<SETTINGS
   {
     "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/linux_base.sh"],
-    "commandToExecute": "bash ./linux_base.sh"
+    "commandToExecute": "bash linux_base.sh"
   }
   SETTINGS
 }
