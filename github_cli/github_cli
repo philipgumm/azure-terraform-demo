@@ -4,3 +4,40 @@ gh run list --repo philipgumm/azure-terraform-demo
 gh run list -s in_progress
 
 gh run view 13096791702 --repo philipgumm/azure-terraform-demo --json artifacts
+
+
+gh auth
+
+gh run
+  cancel
+  delete
+  download
+  list
+  rerun
+  view
+  watch
+
+
+gh repo
+  archive
+  clone
+  create
+  delete
+  deploy-key
+  edit
+  fork
+  gitignore
+  license
+  list
+  rename
+  set-default
+  sync
+  unarchive
+  view
+
+gh workflow
+  disable
+  enable
+  list
+  run
+  view
