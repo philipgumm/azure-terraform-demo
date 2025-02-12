@@ -41,4 +41,9 @@ PowerShell, Shell and Python scripts
 Managed Identities and Azure AD Integration
 On-Prem AD Integration
 RHCE Ansible lab - to include RHCSA components
+Troubleshooting pipelines and remedition workflows for common issues - possibility of using Azure Monitor trigger
+Prometheus and Grafana integration
+Defender installation
 
+Problems:
+Internal DNS resolution requires first Windows Server meaning configuration management needs to deploy to IP. 
