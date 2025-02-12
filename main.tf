@@ -271,8 +271,9 @@ resource "azurerm_virtual_machine_extension" "linux_base_script" {
   name                 = "custom-script-extension-${each.key}"
   virtual_machine_id   = each.value.id
   publisher            = "Microsoft.Azure.Extensions"
-  type                 = "CustomScript"
+  type                 = "CustomScriptExtension"
   type_handler_version = "2.1"
+  auto_upgrade_minor_version = true
 
   settings = <<SETTINGS
   {
