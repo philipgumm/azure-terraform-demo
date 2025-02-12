@@ -277,7 +277,7 @@ resource "azurerm_virtual_machine_extension" "linux_base_script" {
   settings = <<SETTINGS
   {
     "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/linux_base.sh"],
-    "commandToExecute": "sh linux_base.sh"
+    "commandToExecute": "./linux_base.sh"
   }
   SETTINGS
 }
