@@ -24,10 +24,11 @@ jobs:
 
       - name: Setup SSH Key
         run: |
+          
           mkdir -p ~/.ssh
           echo "${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H <fedora-vm-ip> >> ~/.ssh/known_hosts
 
       - name: Run Ansible Playbook
-        run: ansible-playbook -i server_list.ini playbook.yml
+        run: ansible-playbook -i inventory.json playbook.yml

@@ -67,6 +67,11 @@ variable "rg-sin" {
   description = "Creating two resource groups"
 }
 
+# Define a list of allowed keywords
+variable "allowed_tiers" {
+  default = ["admin", "web", "database", "application"]
+}
+
 variable "linux_vm_configurations" {
   type = map(object({
     name            = string

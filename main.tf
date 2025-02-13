@@ -57,35 +57,43 @@ resource "azurerm_subnet" "internal" {
   name                 = "internal"
   resource_group_name  = var.resource_group
   virtual_network_name = azurerm_virtual_network.network.name
-  address_prefixes     = ["10.0.2.0/24"]
+  address_prefixes     = ["10.0.1.0/24"]
+}
+
+resource "azurerm_subnet" "admin-tier" {
+  name                 = "admin-tier"
+  resource_group_name  = var.resource_group
+  virtual_network_name = azurerm_virtual_network.network.name
+  address_prefixes     = ["10.0.6.0/24"]
 }
 
 resource "azurerm_subnet" "web-tier" {
-  name                 = "internal"
+  name                 = "web-tier"
   resource_group_name  = var.resource_group
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.0.3.0/24"]
 }
 
 resource "azurerm_subnet" "application-tier" {
-  name                 = "internal"
+  name                 = "application-tier"
   resource_group_name  = var.resource_group
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.0.4.0/24"]
 }
 
 resource "azurerm_subnet" "database-tier" {
-  name                 = "internal"
+  name                 = "database-tier"
   resource_group_name  = var.resource_group
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.0.5.0/24"]
 }
 
-resource "azurerm_subnet" "admin-tier" {
-  name                 = "internal"
+data "azurerm_subnet" "filtered" {
+  for_each = { for s in azurerm_virtual_network.network.subnet : s.name => s if length([for tier in var.allowed_tiers : tier if contains(s.name, tier)]) > 0 }
+
+  name                 = each.value.name
+  virtual_network_name = azurerm_virtual_network.my_vnet.name
   resource_group_name  = var.resource_group
-  virtual_network_name = azurerm_virtual_network.network.name
-  address_prefixes     = ["10.0.6.0/24"]
 }
 
 resource "azurerm_network_interface" "linux-nic" {
@@ -97,7 +105,7 @@ resource "azurerm_network_interface" "linux-nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.internal.id
+    subnet_id                     = tolist([for s in data.azurerm_subnet.filtered : s.id])[0]
     private_ip_address_allocation = "Dynamic"
   }
 }
@@ -111,7 +119,7 @@ resource "azurerm_network_interface" "windows-nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.internal.id
+    subnet_id                     = tolist([for s in data.azurerm_subnet.filtered : s.id])[0]
     private_ip_address_allocation = "Dynamic"
   }
 }
@@ -304,7 +312,7 @@ resource "azurerm_virtual_machine_extension" "linux_base_script" {
   settings = <<SETTINGS
   {
     "fileUris": ["https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/linux_base.sh"],
-    "commandToExecute": "bash linux_base"
+    "commandToExecute": "bash linux_base.sh"
   }
   SETTINGS
 }
