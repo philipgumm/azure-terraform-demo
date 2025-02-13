@@ -36,6 +36,7 @@ echo "Ansible installation complete." > /tmp/ansible_install.log
 echo "Script execution completed." | tee -a /tmp/custom_script.log
 date >> /tmp/custom_script.log
 
+exit 0
 # Maybe we should restart SSH at the very end
 # sudo systemctl enable sshd >> /tmp/custom_script.log 2>&1
 # sudo systemctl start sshd >> /tmp/custom_script.log 2>&1

@@ -57,15 +57,10 @@ variable "root_certificate_data" {
   description = "Base64-encoded root certificate data"
 }
 
-# variable "subnet_map" {
-#  type = map(string)
-#  default = {
-#    "admin"      = "admin-tier"
-#    "web"        = "web-tier"
-#    "database"   = "database-tier"
-#    "application"= "application-tier"
-#   }
-# }
+variable "subnet_map" {
+  type = map(string)
+  description = "values for subnet map"
+}
 
 variable "rg-hon" {
   type        = string
