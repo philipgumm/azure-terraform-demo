@@ -14,6 +14,13 @@ rg-hon = "dev-hon-rg"
 
 rg-sin = "dev-sin-rg"
 
+subnet_map = {
+  "web"      = "web-tier"
+  "app"      = "application-tier"
+  "dbs"      = "database-tier"
+  "adm"      = "admin-tier"
+}
+
 keyvault_name = "azure-terraform-demo-kv"
 
 LabManagement-rg = "LabManagement"
