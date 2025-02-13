@@ -10,4 +10,6 @@ cat /var/lib/waagent/custom-script/download/0/stdout
 cat /var/lib/waagent/custom-script/download/0/stderr
 
 
+cat /var/lib/waagent/custom-script/download/0/stderr
+cat /var/log/azure/custom-script/handler.log
 
