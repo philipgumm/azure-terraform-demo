@@ -60,7 +60,33 @@ resource "azurerm_subnet" "internal" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
+resource "azurerm_subnet" "web-tier" {
+  name                 = "internal"
+  resource_group_name  = var.resource_group
+  virtual_network_name = azurerm_virtual_network.network.name
+  address_prefixes     = ["10.0.3.0/24"]
+}
 
+resource "azurerm_subnet" "application-tier" {
+  name                 = "internal"
+  resource_group_name  = var.resource_group
+  virtual_network_name = azurerm_virtual_network.network.name
+  address_prefixes     = ["10.0.4.0/24"]
+}
+
+resource "azurerm_subnet" "database-tier" {
+  name                 = "internal"
+  resource_group_name  = var.resource_group
+  virtual_network_name = azurerm_virtual_network.network.name
+  address_prefixes     = ["10.0.5.0/24"]
+}
+
+resource "azurerm_subnet" "admin-tier" {
+  name                 = "internal"
+  resource_group_name  = var.resource_group
+  virtual_network_name = azurerm_virtual_network.network.name
+  address_prefixes     = ["10.0.6.0/24"]
+}
 
 resource "azurerm_network_interface" "linux-nic" {
   for_each = var.linux_vm_configurations
