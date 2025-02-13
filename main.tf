@@ -92,7 +92,7 @@ data "azurerm_subnet" "filtered" {
   for_each = { for s in azurerm_virtual_network.network.subnet : s.name => s if length([for tier in var.allowed_tiers : tier if contains(s.name, tier)]) > 0 }
 
   name                 = each.value.name
-  virtual_network_name = azurerm_virtual_network.my_vnet.name
+  virtual_network_name = azurerm_virtual_network.network.name
   resource_group_name  = var.resource_group
 }
 
