@@ -57,6 +57,16 @@ variable "root_certificate_data" {
   description = "Base64-encoded root certificate data"
 }
 
+# variable "subnet_map" {
+#  type = map(string)
+#  default = {
+#    "admin"      = "admin-tier"
+#    "web"        = "web-tier"
+#    "database"   = "database-tier"
+#    "application"= "application-tier"
+#   }
+# }
+
 variable "rg-hon" {
   type        = string
   description = "Creating two resource groups"
@@ -68,9 +78,6 @@ variable "rg-sin" {
 }
 
 # Define a list of allowed keywords
-variable "allowed_tiers" {
-  default = ["admin", "web", "database", "application"]
-}
 
 variable "linux_vm_configurations" {
   type = map(object({

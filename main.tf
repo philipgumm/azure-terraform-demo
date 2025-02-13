@@ -57,44 +57,10 @@ resource "azurerm_subnet" "internal" {
   name                 = "internal"
   resource_group_name  = var.resource_group
   virtual_network_name = azurerm_virtual_network.network.name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes     = ["10.0.2.0/24"]
 }
 
-resource "azurerm_subnet" "admin-tier" {
-  name                 = "admin-tier"
-  resource_group_name  = var.resource_group
-  virtual_network_name = azurerm_virtual_network.network.name
-  address_prefixes     = ["10.0.6.0/24"]
-}
 
-resource "azurerm_subnet" "web-tier" {
-  name                 = "web-tier"
-  resource_group_name  = var.resource_group
-  virtual_network_name = azurerm_virtual_network.network.name
-  address_prefixes     = ["10.0.3.0/24"]
-}
-
-resource "azurerm_subnet" "application-tier" {
-  name                 = "application-tier"
-  resource_group_name  = var.resource_group
-  virtual_network_name = azurerm_virtual_network.network.name
-  address_prefixes     = ["10.0.4.0/24"]
-}
-
-resource "azurerm_subnet" "database-tier" {
-  name                 = "database-tier"
-  resource_group_name  = var.resource_group
-  virtual_network_name = azurerm_virtual_network.network.name
-  address_prefixes     = ["10.0.5.0/24"]
-}
-
-data "azurerm_subnet" "filtered" {
-  for_each = { for s in azurerm_virtual_network.network.subnet : s.name => s if length([for tier in var.allowed_tiers : tier if contains(s.name, tier)]) > 0 }
-
-  name                 = each.value.name
-  virtual_network_name = azurerm_virtual_network.network.name
-  resource_group_name  = var.resource_group
-}
 
 resource "azurerm_network_interface" "linux-nic" {
   for_each = var.linux_vm_configurations
@@ -105,7 +71,7 @@ resource "azurerm_network_interface" "linux-nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = tolist([for s in data.azurerm_subnet.filtered : s.id])[0]
+    subnet_id                     = azurerm_subnet.internal.id
     private_ip_address_allocation = "Dynamic"
   }
 }
@@ -119,7 +85,7 @@ resource "azurerm_network_interface" "windows-nic" {
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = tolist([for s in data.azurerm_subnet.filtered : s.id])[0]
+    subnet_id                     = azurerm_subnet.internal.id
     private_ip_address_allocation = "Dynamic"
   }
 }
