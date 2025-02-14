@@ -71,7 +71,7 @@ jobs:
       - name: Get Terraform Outputs
         id: tf_outputs
         run: |
-          echo "$(terraform output -raw ansible_inventory)" > inventory.json
+          echo "$(terraform output -raw inventory_json)" > inventory.json
   
       - name: Upload Windows & Linux Inventory Artifacts
         uses: actions/upload-artifact@v4
