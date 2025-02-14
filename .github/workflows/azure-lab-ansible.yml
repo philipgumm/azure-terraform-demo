@@ -2,7 +2,7 @@ name: Apply Ansible Configuration
 
 on:
   workflow_run:
-    workflows: ["Inspect Terraform Inventory"]  # Ensures inspection passes first
+    workflows: ["Terraform Apply"]
     types:
       - completed
 
@@ -13,12 +13,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Download Inventory JSON
-        uses: actions/download-artifact@v4
+      - name: Restore Inventory JSON from Cache
+        uses: actions/cache@v3
         with:
-          name: server-inventory
-          path: .
+          path: inventory.json
+          key: server-inventory-latest
 
+      - name: Extract Linux Hosts from Inventory JSON
+        run: |
+          jq '.all.children.linux' inventory.json > linux_inventory.json
+          cat linux_inventory.json | jq '.'
+      
       - name: Install Ansible
         run: |
           sudo apt update
@@ -26,4 +31,4 @@ jobs:
 
       - name: Run Ansible Playbook
         run: |
-          ansible-playbook -i inventory.json configure-linux.yml
+          ansible-playbook -i linux_inventory.json configure-linux.yml
