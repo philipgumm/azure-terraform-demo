@@ -1,34 +1,29 @@
-name: "Azure Ansible Deployment"
+name: Apply Ansible Configuration
 
 on:
-  workflow_dispatch: # Allows manual trigger
-
+  workflow_run:
+    workflows: ["Inspect Terraform Inventory"]  # Ensures inspection passes first
+    types:
+      - completed
 
 jobs:
-  ansible-deploy:
+  ansible:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Download Inventory JSON
+        uses: actions/download-artifact@v4
+        with:
+          name: server-inventory
+          path: .
 
       - name: Install Ansible
         run: |
           sudo apt update
           sudo apt install -y ansible
 
-      - name: Generate Ansible Inventory
-        run: |
-          echo "[webservers]" > inventory.ini
-          echo "$(terraform output -raw vm_ip) ansible_user=ansibleadmin" >> inventory.ini
-          cat inventory.ini
-
-      - name: Setup SSH Key
-        run: |
-          
-          mkdir -p ~/.ssh
-          echo "${{ secrets.ANSIBLE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H <fedora-vm-ip> >> ~/.ssh/known_hosts
-
       - name: Run Ansible Playbook
-        run: ansible-playbook -i inventory.json playbook.yml
+        run: |
+          ansible-playbook -i inventory.json configure-linux.yml

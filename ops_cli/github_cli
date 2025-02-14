@@ -4,6 +4,7 @@ gh run list --repo philipgumm/azure-terraform-demo
 gh run list -s in_progress
 
 gh run view 13096791702 --repo philipgumm/azure-terraform-demo --json artifacts
+gh run view --log
 
 
 gh auth

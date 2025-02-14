@@ -1,50 +1,32 @@
-name: Azure DSC Windows Deployment
+name: Apply DSC Configuration
 
 on:
-  workflow_dispatch:
   workflow_run:
-    workflows: ["Azure Terraform Create"]
+    workflows: ["Inspect Terraform Inventory"]
     types:
       - completed
 
-
-
-
 jobs:
-  deploy_windows_dsc:
+  dsc:
     runs-on: windows-latest
-
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Download JSON Inventory
+      - name: Download Inventory JSON
         uses: actions/download-artifact@v4
         with:
           name: server-inventory
           path: .
 
-      - name: Apply DSC Configuration
-        shell: pwsh
+      - name: Convert JSON to PowerShell Object
         run: |
-          $inventory = Get-Content inventory.json | ConvertFrom-Json
+          $inventory = Get-Content -Path inventory.json | ConvertFrom-Json
           $windowsHosts = $inventory.all.children.windows.hosts
+          Write-Output "Windows Hosts: $windowsHosts"
+        shell: powershell
 
-          foreach ($host in $windowsHosts.PSObject.Properties) {
-              $hostname = $host.Name
-              $hostDetails = $host.Value
-              $ip = $hostDetails.ansible_host
-              Write-Host "Deploying DSC to $hostname ($ip)"
-
-
-              
-              Write-Host "Copying DSC script to $hostname..."
-              Copy-Item -Path dsc/windows_server_dsc.ps1 -Destination "\\$ip\C$\Temp\windows_server_dsc.ps1" -Force
-
-              # Run DSC Configuration remotely
-              Invoke-Command -ComputerName $ip -Credential (Get-Credential) -ScriptBlock {
-                  param ($dscScript)
-                  Write-Host "Applying DSC Configuration..."
-                  & "C:\Temp\$dscScript"
-              } -ArgumentList "windows_server_dsc.ps1"
-          }
+      - name: Apply DSC Configuration
+        run: |
+          Start-DscConfiguration -Path .\DSC -Wait -Force -Verbose
+        shell: powershell
