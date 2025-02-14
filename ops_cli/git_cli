@@ -1,0 +1,4 @@
+git hash-object -w "hello world"
+git cat-file blob XXX
+
+git log --oneline

@@ -7,6 +7,9 @@ on:
     types:
       - completed
 
+
+
+
 jobs:
   deploy_windows_dsc:
     runs-on: windows-latest
@@ -33,7 +36,8 @@ jobs:
               $ip = $hostDetails.ansible_host
               Write-Host "Deploying DSC to $hostname ($ip)"
 
-              # Copy DSC script from repo to remote server
+
+              
               Write-Host "Copying DSC script to $hostname..."
               Copy-Item -Path dsc/windows_server_dsc.ps1 -Destination "\\$ip\C$\Temp\windows_server_dsc.ps1" -Force
 

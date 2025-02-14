@@ -1,0 +1,4 @@
+az login --identity --username <client_id|object_id|resource_id>
+
+az keyvault create --name <KeyVaultName> --resource-group <ResourceGroupName> --location <Location>
+

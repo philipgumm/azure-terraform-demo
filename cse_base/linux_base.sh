@@ -10,9 +10,9 @@ if ! curl -s --head http://www.google.com | grep "200 OK" > /dev/null; then
   exit 1
 fi
 
-timeout 600 sudo dnf install -y epel-release >> /tmp/custom_script.log 2>&1
-timeout 1200 sudo dnf update -y >> /tmp/custom_script.log 2>&1
-timeout 600 sudo dnf install -y ansible >> /tmp/custom_script.log 2>&1
+#timeout 600 sudo dnf install -y epel-release >> /tmp/custom_script.log 2>&1
+#timeout 1200 sudo dnf update -y >> /tmp/custom_script.log 2>&1
+#timeout 600 sudo dnf install -y ansible >> /tmp/custom_script.log 2>&1
 
 
 ansible --version >> /tmp/custom_script.log 2>&1 
