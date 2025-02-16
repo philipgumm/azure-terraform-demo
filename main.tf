@@ -53,6 +53,16 @@ resource "azurerm_virtual_network" "network" {
   depends_on          = [azurerm_resource_group.rg]
 }
 
+resource "azurerm_private_dns_zone_virtual_network_link" "dns_link" {
+  name                  = "${var.resource_group}-dns-link"
+  resource_group_name   = var.resource_group
+  private_dns_zone_name = "azure-terraform-demo.com"
+  virtual_network_id    = azurerm_virtual_network.network.id
+
+  registration_enabled = true  # This allows automatic VM name registration
+}
+
+
 resource "azurerm_subnet" "internal" {
   name                 = "internal"
   resource_group_name  = var.resource_group
@@ -291,9 +301,9 @@ output "inventory_json" {
           hosts = {
             for vm in azurerm_linux_virtual_machine.linux_vm :
             vm.name => {
-              ansible_host = vm.public_ip_address
-              ansible_user = "azureuser"
-              ansible_ssh_private_key_file = "~/.ssh/id_rsa"
+              host = vm.public_ip_address
+              user = "azureuser"
+              ssh_private_key_file = "~/.ssh/id_rsa"
             }
           }
         },
@@ -301,11 +311,11 @@ output "inventory_json" {
           hosts = {
             for vm in azurerm_windows_virtual_machine.windows_vm :
             vm.name => {
-              ansible_host = vm.public_ip_address
-              ansible_user = "Administrator"
-              ansible_connection = "winrm"
-              ansible_winrm_transport = "ntlm"
-              ansible_winrm_server_cert_validation = "ignore"
+              host = vm.public_ip_address
+              user = "Administrator"
+              connection = "winrm"
+              winrm_transport = "ntlm"
+              winrm_server_cert_validation = "ignore"
             }
           }
         }

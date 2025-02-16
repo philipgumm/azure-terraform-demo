@@ -1,0 +1,16 @@
+{
+  "web-win-srv": {
+    "host": "10.0.0.2",
+    "user": "Administrator",
+    "connection": "winrm",
+    "winrm_transport": "ntlm",
+    "winrm_server_cert_validation": "ignore"
+  },
+  "app-win-srv": {
+    "host": "10.0.0.3",
+    "user": "Administrator",
+    "connection": "winrm",
+    "winrm_transport": "ntlm",
+    "winrm_server_cert_validation": "ignore"
+  }
+}

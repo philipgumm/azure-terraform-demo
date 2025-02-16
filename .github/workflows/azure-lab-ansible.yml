@@ -29,6 +29,6 @@ jobs:
           sudo apt update
           sudo apt install -y ansible
 
-      - name: Run Ansible Playbook
+      - name: Run Ansible Playbook on Remote Hosts
         run: |
-          ansible-playbook -i linux_inventory.json configure-linux.yml
+          ansible-playbook -i linux_inventory.json ansible/configure-linux.yml

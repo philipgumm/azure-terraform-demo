@@ -19,14 +19,64 @@ jobs:
           path: inventory.json
           key: server-inventory-latest
 
-      - name: Convert JSON to PowerShell Object
+      - name: Extract Windows Hosts from Inventory JSON
+        shell: powershell
         run: |
-          $inventory = Get-Content -Path inventory.json | ConvertFrom-Json
+          
+          # Filter down From Windows/Linux to only Windows
+          $inventory = Get-Content -Path ansible\inventory.json | ConvertFrom-Json
           $windowsHosts = $inventory.all.children.windows.hosts
+          $windowsHosts | ConvertTo-Json -Depth 10 | Out-File "ansible\windows_inventory.json"
           Write-Output "Windows Hosts: $windowsHosts"
-        shell: powershell
+        
 
-      - name: Apply DSC Configuration
-        run: |
-          Start-DscConfiguration -Path .\DSC -Wait -Force -Verbose
+      - name: Download DSC Script
         shell: powershell
+        run: |
+        
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/philipgumm/azure-terraform-demo/main/dsc/web_tier_dsc.ps1" -OutFile "web_tier_dsc.ps1"
+        
+
+      - name: Copy DSC Script to Remote Hosts & Apply Configuration
+        shell: powershell
+        run: |
+          
+          # 
+          $windowsHosts = Get-Content -Path "ansible\windows_inventory.json" | ConvertFrom-Json
+      
+          $serverObjects = @()
+
+          # Need to know whether this contains the full object
+          foreach ($vm in $windowsHosts.PSObject.Properties.Name) {
+            
+            $hostName = $vm
+            $ip = $windowsHosts.$vm.host
+            $username = $windowsHosts.$vm.user
+
+            write-output "Host: $hostName | IP: $ip | Username: $username"
+
+          $serverObjects += $vm
+          
+          switch ($hostName) {
+
+            "app-win-srv" {$dscScript = "application_tier_dsc.ps1"; break }
+            "web-win-srv" {$dscScript = "web_tier_dsc.ps1"; break }
+            "dbs-win-srv" {$dscScript = "database_tier_dsc.ps1"; break }
+            Default {Write-Host "No matching DSC script found for server $($vm.name)"}
+
+            }
+
+            $username = $hostDetails.user
+            $password = ConvertTo-SecureString -String "${{ vars.LOCAL_WINDOWS_PASSWORD }}" -AsPlainText -Force
+            $cred = New-Object System.Management.Automation.PSCredential ($username, $password)
+
+            Copy-Item -Path "dsc\$dscScript" -Destination "C:\temp\$dscScript" -ToSession (New-PSSession -ComputerName $hostName -Credential $cred -UseSSL -SessionOption (New-PSSessionOption -SkipCACheck))
+
+            Invoke-Command -ComputerName $ip -Credential $cred -UseSSL -ScriptBlock {Set-Location -Path "C:\temp\$dscScript";
+                
+            Start-DscConfiguration -Path C:\temp\dsc\web_tier_dsc -Wait -Force -Verbose} -SessionOption (New-PSSessionOption -SkipCACheck) 
+          }
+          
+ 
+        
+          # Remember the DNS look up over the VPN after you've finished this. 
