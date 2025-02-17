@@ -1,0 +1,19 @@
+- name: Configure Linux VMs
+  hosts: all
+  become: true
+  tasks:
+    - name: Test connectivity
+      ping:
+
+    - name: Create a test file
+      copy:
+        content: "Ansible has successfully connected to this VM."
+        dest: /tmp/ansible-test.txt
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Ensure Nginx is installed
+      package:
+        name: nginx
+        state: present

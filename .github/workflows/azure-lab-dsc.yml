@@ -74,7 +74,7 @@ jobs:
 
             Invoke-Command -ComputerName $ip -Credential $cred -UseSSL -ScriptBlock {Set-Location -Path "C:\temp\$dscScript";
                 
-            Start-DscConfiguration -Path C:\temp\dsc\web_tier_dsc -Wait -Force -Verbose} -SessionOption (New-PSSessionOption -SkipCACheck) 
+            Start-DscConfiguration -Path "C:\temp\$dscScript" -Wait -Force -Verbose} -SessionOption (New-PSSessionOption -SkipCACheck) 
           }
           
  
