@@ -19,7 +19,17 @@ jobs:
         with:
           path: inventory.json
           key: server-inventory-latest
-
+      
+      - name: Verify Inventory JSON File Exists
+        run: |
+          if [ ! -f inventory.json ]; then
+            echo "Error: inventory.json not found!"
+            exit 1
+          else
+            echo "inventory.json found:"
+            cat inventory.json
+          fi
+  
       - name: Extract Linux Hosts from Inventory JSON
         run: |
           jq '.all.children.linux' inventory.json > linux_inventory.json
