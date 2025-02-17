@@ -35,9 +35,10 @@ jobs:
         shell: powershell
         run: |
         
-          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/philipgumm/azure-terraform-demo/main/dsc/web_tier_dsc.ps1" -OutFile "web_tier_dsc.ps1"
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/philipgumm/azure-terraform-demo/refs/heads/master/dsc/application_tier_dsc.ps1" -OutFile "application_tier_dsc.ps1"
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/philipgumm/azure-terraform-demo/refs/heads/master/dsc/web_tier_dsc.ps1" -OutFile "web_tier_dsc.ps1"
+          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/philipgumm/azure-terraform-demo/refs/heads/master/dsc/database_tier_dsc.ps1" -OutFile "database_tier_dsc.ps1"
         
-
       - name: Copy DSC Script to Remote Hosts & Apply Configuration
         shell: powershell
         run: |
