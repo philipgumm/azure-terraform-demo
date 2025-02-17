@@ -68,7 +68,7 @@ jobs:
 
             }
 
-            $username = $hostDetails.user
+            $username = "adminuser"
             $password = ConvertTo-SecureString -String "${{ vars.LOCAL_WINDOWS_PASSWORD }}" -AsPlainText -Force
             $cred = New-Object System.Management.Automation.PSCredential ($username, $password)
 
