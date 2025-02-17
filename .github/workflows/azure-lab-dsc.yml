@@ -1,8 +1,9 @@
 name: Apply DSC Configuration
 
 on:
+  workflow_dispatch:
   workflow_run:
-    workflows: ["Terraform Apply"]
+    workflows: ["Azure Terraform Create"]
     types:
       - completed
 

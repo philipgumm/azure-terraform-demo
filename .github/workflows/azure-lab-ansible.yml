@@ -1,8 +1,9 @@
 name: Apply Ansible Configuration
 
 on:
+  workflow_dispatch:
   workflow_run:
-    workflows: ["Terraform Apply"]
+    workflows: ["Azure Terraform Create"]
     types:
       - completed
 
@@ -23,7 +24,14 @@ jobs:
         run: |
           jq '.all.children.linux' inventory.json > linux_inventory.json
           cat linux_inventory.json | jq '.'
-      
+
+      - name: Setup SSH Access
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H $(jq -r 'keys[]' linux_inventory.json) >> ~/.ssh/known_hosts
+
       - name: Install Ansible
         run: |
           sudo apt update
@@ -31,4 +39,4 @@ jobs:
 
       - name: Run Ansible Playbook on Remote Hosts
         run: |
-          ansible-playbook -i linux_inventory.json ansible/configure-linux.yml
+          ansible-playbook -i linux_inventory.json -u azureuser --private-key ~/.ssh/id_rsa ansible/configure-linux.yml
