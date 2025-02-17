@@ -53,15 +53,19 @@ resource "azurerm_virtual_network" "network" {
   depends_on          = [azurerm_resource_group.rg]
 }
 
+resource "azurerm_private_dns_zone" "private_dns" {
+  name                = "internal.azure-terraform-demo.com"
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
 resource "azurerm_private_dns_zone_virtual_network_link" "dns_link" {
   name                  = "${var.resource_group}-dns-link"
   resource_group_name   = var.resource_group
-  private_dns_zone_name = "azure-terraform-demo.com"
+  private_dns_zone_name = azurerm_private_dns_zone.private_dns.name
   virtual_network_id    = azurerm_virtual_network.network.id
 
-  registration_enabled = true  # This allows automatic VM name registration
+  registration_enabled = true  
 }
-
 
 resource "azurerm_subnet" "internal" {
   name                 = "internal"
@@ -69,8 +73,6 @@ resource "azurerm_subnet" "internal" {
   virtual_network_name = azurerm_virtual_network.network.name
   address_prefixes     = ["10.0.2.0/24"]
 }
-
-
 
 resource "azurerm_network_interface" "linux-nic" {
   for_each = var.linux_vm_configurations
