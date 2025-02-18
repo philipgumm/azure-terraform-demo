@@ -25,9 +25,9 @@ jobs:
         run: |
           
           # Filter down From Windows/Linux to only Windows
-          $inventory = Get-Content -Path ansible\inventory.json | ConvertFrom-Json
+          $inventory = Get-Content -Path inventory.json | ConvertFrom-Json
           $windowsHosts = $inventory.all.children.windows.hosts
-          $windowsHosts | ConvertTo-Json -Depth 10 | Out-File "ansible\windows_inventory.json"
+          $windowsHosts | ConvertTo-Json -Depth 10 | Out-File "windows_inventory.json"
           Write-Output "Windows Hosts: $windowsHosts"
         
 
@@ -43,8 +43,8 @@ jobs:
         shell: powershell
         run: |
           
-          # 
-          $windowsHosts = Get-Content -Path "ansible\windows_inventory.json" | ConvertFrom-Json
+          # Bugger, need to change this as it's being generated remember. !!! After deletion it won't be there any more.
+          $windowsHosts = Get-Content -Path "windows_inventory.json" | ConvertFrom-Json
       
           $serverObjects = @()
 

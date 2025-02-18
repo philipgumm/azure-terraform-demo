@@ -44,11 +44,19 @@ jobs:
       with:
         terraform_version: 1.6.0 
 
+    - name: "Terraform Init"
+        id: init
+        run: | 
+          terraform init \
+          -backend-config="resource_group_name=LabManagement" \
+          -backend-config="storage_account_name=labmanagementstorage01" \
+          -backend-config="container_name=azure-terraform-demo" \
+          -backend-config="key=terraform.tfstate"
+
     - name: Get Terraform State Lock ID
       id: get_lock
       continue-on-error: true
       run: |
-          terraform init
           terraform providers lock -json | jq -r '.lock_id' > lock_id.txt
           cat lock_id.txt
 
@@ -62,9 +70,6 @@ jobs:
           else
             echo "No lock detected, proceeding with destroy."
           fi
-
- #   - name: Terraform Init
- #     run: terraform init
 
     - name: Pull Current State 
       run: terraform refresh
