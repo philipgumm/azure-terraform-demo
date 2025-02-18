@@ -14,6 +14,8 @@ fi
 #timeout 1200 sudo dnf update -y >> /tmp/custom_script.log 2>&1
 timeout 100 sudo dnf install -y ansible >> /tmp/custom_script.log 2>&1
 
+# &> /tmp/custom_script.log
+
 
 ansible --version >> /tmp/custom_script.log 2>&1 
 if [ $? -ne 0 ]; then

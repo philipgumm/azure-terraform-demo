@@ -43,20 +43,3 @@ jobs:
     permissions:
       id-token: write
       contents: read
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Set Up Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: latest
-
-      - name: Initialize Terraform
-        run: terraform init
-        working-directory: terraform/
-
-      - name: Apply Terraform Changes
-        run: terraform apply -auto-approve tfplan
-        working-directory: terraform/
