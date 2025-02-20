@@ -74,10 +74,8 @@ jobs:
           echo "$(terraform output -raw inventory_json)" > inventory.json
   
       - name: Upload Inventory JSON
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: inventory
           path: inventory.json
-          retention-days: 7  # Adjust as needed
-
-          
+          retention-days: 3 
