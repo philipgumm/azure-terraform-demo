@@ -14,11 +14,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Restore Inventory JSON from Cache
-        uses: actions/cache@v3
+      - name: Download Inventory JSON
+        uses: actions/download-artifact@v3
         with:
-          path: inventory.json
-          key: server-inventory-latest
+          name: inventory
+    
+      - name: Verify Inventory JSON
+        run: cat inventory.json  # Debugging step
 
       - name: Extract Windows Hosts from Inventory JSON
         shell: powershell
@@ -74,7 +76,7 @@ jobs:
 
             Copy-Item -Path "dsc\$dscScript" -Destination "C:\temp\$dscScript" -ToSession (New-PSSession -ComputerName $hostName -Credential $cred -UseSSL -SessionOption (New-PSSessionOption -SkipCACheck))
 
-            Invoke-Command -ComputerName $ip -Credential $cred -UseSSL -ScriptBlock {Set-Location -Path "C:\temp\$dscScript";
+            Invoke-Command -ComputerName $hostname -Credential $cred -UseSSL -ScriptBlock {Set-Location -Path "C:\temp\$dscScript";
                 
             Start-DscConfiguration -Path "C:\temp\$dscScript" -Wait -Force -Verbose} -SessionOption (New-PSSessionOption -SkipCACheck) 
           }

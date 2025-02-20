@@ -73,11 +73,11 @@ jobs:
         run: |
           echo "$(terraform output -raw inventory_json)" > inventory.json
   
-      - name: Cache Inventory JSON
-        uses: actions/cache@v3
+      - name: Upload Inventory JSON
+        uses: actions/upload-artifact@v3
         with:
+          name: inventory
           path: inventory.json
-          key: server-inventory-${{ github.run_id }}
-          restore-keys: server-inventory-
+          retention-days: 7  # Adjust as needed
 
           
