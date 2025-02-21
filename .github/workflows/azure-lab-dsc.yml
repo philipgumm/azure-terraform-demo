@@ -20,7 +20,9 @@ jobs:
           CONTAINER_NAME: ${{ vars.AZURE_TERRAFORM_INVENTORY }}
         run: |
           az storage blob download --account-name $env:STORAGE_ACCOUNT --container-name $env:CONTAINER_NAME --name inventory.json --file inventory.json
-    
+          if (!(Test-Path -Path "inventory.json")) {
+          Write-Output "inventory.json found."
+          }
     
       - name: Verify Inventory JSON
         run: cat inventory.json  # Debugging step
