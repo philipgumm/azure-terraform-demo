@@ -17,9 +17,9 @@ jobs:
       - name: Download Inventory from Azure Blob
         env: 
           STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
-          CONTAINER_NAME: ${{ vars.AZURE_CONTAINER_NAME }}
+          CONTAINER_NAME: ${{ vars.AZURE_TERRAFORM_INVENTORY }}
         run: |
-          az storage blob download --account-name $STORAGE_ACCOUNT --container-name $CONTAINER_NAME --name inventory.json file inventory.json
+          az storage blob download --account-name env:STORAGE_ACCOUNT --container-name env:CONTAINER_NAME --name inventory.json file inventory.json
     
     
       - name: Verify Inventory JSON
