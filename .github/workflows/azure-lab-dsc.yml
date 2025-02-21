@@ -14,10 +14,17 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
-      - name: Download Inventory JSON
-        uses: actions/download-artifact@v4
-        with:
-          name: inventory
+      - name: Download Inventory from Azure Blob
+        env: 
+          STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
+          CONTAINER_NAME: ${{ vars.AZURE_CONTAINER_NAME }}
+        run: |
+          az storage blob download \
+            --account-name $STORAGE_ACCOUNT \
+            --container-name $CONTAINER_NAME \
+            --name inventory.json \
+            --file inventory.json
+    
     
       - name: Verify Inventory JSON
         run: cat inventory.json  # Debugging step
