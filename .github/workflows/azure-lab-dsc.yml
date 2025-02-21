@@ -28,13 +28,17 @@ jobs:
       - name: Extract Windows Hosts from Inventory JSON
         shell: powershell
         run: |
-          
+          if (!(Test-Path -Path "inventory.json")) {
+
           # Filter down From Windows/Linux to only Windows
           $inventory = Get-Content -Path inventory.json | ConvertFrom-Json
           $windowsHosts = $inventory.all.children.windows.hosts
           $windowsHosts | ConvertTo-Json -Depth 10 | Out-File "windows_inventory.json"
           Write-Output "Windows Hosts: $windowsHosts"
-        
+            }
+          else {  
+          Write-Output "inventory.json not found."
+          }
 
       - name: Download DSC Script
         shell: powershell
