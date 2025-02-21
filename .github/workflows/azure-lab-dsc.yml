@@ -19,7 +19,7 @@ jobs:
           STORAGE_ACCOUNT: ${{ secrets.AZURE_STORAGE_ACCOUNT }}
           CONTAINER_NAME: ${{ vars.AZURE_CONTAINER_NAME }}
         run: |
-          az storage blob download \
+          az storage blob download `
             --account-name $STORAGE_ACCOUNT `
             --container-name $CONTAINER_NAME `
             --name inventory.json `
