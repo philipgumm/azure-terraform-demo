@@ -20,9 +20,9 @@ jobs:
           CONTAINER_NAME: ${{ vars.AZURE_CONTAINER_NAME }}
         run: |
           az storage blob download \
-            --account-name $STORAGE_ACCOUNT \
-            --container-name $CONTAINER_NAME \
-            --name inventory.json \
+            --account-name $STORAGE_ACCOUNT `
+            --container-name $CONTAINER_NAME `
+            --name inventory.json `
             --file inventory.json
     
     
