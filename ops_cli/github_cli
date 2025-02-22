@@ -36,7 +36,8 @@ gh repo
   unarchive
   view
 
-gh workflow
+gh workflow list
+gh workflow run "Apply DSC Configuration" 
   disable
   enable
   list
