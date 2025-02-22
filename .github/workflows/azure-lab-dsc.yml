@@ -27,6 +27,13 @@ jobs:
       - name: Verify Inventory JSON
         run: cat inventory.json  # Debugging step
 
+      - name: Debug Inventory JSON Contents
+        shell: pwsh
+        run: |
+          Write-Host "Contents of inventory.json:"
+          Get-Content -Path inventory.json -Raw
+    
+
       - name: Extract Windows Hosts from Inventory JSON
         shell: powershell
         run: |
