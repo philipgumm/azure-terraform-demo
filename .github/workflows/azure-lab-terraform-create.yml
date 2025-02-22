@@ -68,10 +68,10 @@ jobs:
         run: | 
           terraform apply -auto-approve -lock=false -no-color
 
-      - name: Get Terraform Outputs
-        id: tf_outputs
-        run: |
-          echo "$(terraform output -raw inventory_json)" > inventory.json
+      - name: Get Terraform Outputs (Clean JSON)
+          id: tf_outputs
+          run: |
+            terraform output -json inventory_json | jq '.' > inventory.json
   
       - name: Upload Inventory to Azure Blob
         run: |
