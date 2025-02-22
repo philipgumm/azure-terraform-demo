@@ -33,7 +33,7 @@ jobs:
           if (Test-Path -Path "inventory.json") {
 
           # Filter down From Windows/Linux to only Windows
-          $inventory = Get-Content -Path inventory.json | ConvertFrom-Json
+          $inventory = Get-Content -raw -Path inventory.json | ConvertFrom-Json
           $windowsHosts = $inventory.all.children.windows.hosts
           $windowsHosts | ConvertTo-Json -Depth 10 | Out-File "windows_inventory.json"
           Write-Output "Windows Hosts: $windowsHosts"
