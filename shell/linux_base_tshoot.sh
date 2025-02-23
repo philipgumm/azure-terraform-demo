@@ -1,5 +1,3 @@
-
-
 curl -O "https://labmanagementstorage01.blob.core.windows.net/public-azure-terraform-demo/linux_base.sh"
 sh linux_base.sh
 

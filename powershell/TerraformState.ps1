@@ -30,6 +30,8 @@ function Unlock-TerraformState {
 
 }
 
+
+
 Set-AzCurrentStorageAccount -ResourceGroupName LabManagement -StorageAccountName labmanagementstorage01
 $token = New-AzStorageContainerSASToken -Name templates -Permission r -ExpiryTime (Get-Date).AddHours(2.0)
 $url = (Get-AzStorageBlob -Container templates -Blob Master_Template.json).ICloudBlob.uri.AbsoluteUri

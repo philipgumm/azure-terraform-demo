@@ -9,7 +9,7 @@ gh run view --log
 
 gh auth
 
-gh run
+gh run view --log
   cancel
   delete
   download
@@ -37,7 +37,9 @@ gh repo
   view
 
 gh workflow list
-gh workflow run "Apply DSC Configuration" 
+gh workflow run "Apply DSC Configuration"
+gh run list --workflow azure-lab-dsc.yml
+gh workflow view azure-lab-dsc.yml --yaml
   disable
   enable
   list

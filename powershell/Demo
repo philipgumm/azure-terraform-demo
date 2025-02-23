@@ -1,0 +1,21 @@
+1) Create a PowerShell module and import it
+2) String manipulation
+3) Date and Time manipulation
+4) Copying files
+5) Selecting files based on characteristics
+6) Some Networking
+7) PowerShell remote to a remote machine
+
+
+Approaches to logging into Azure Resources
+1) Azure CLI
+2) Azure Storage Account
+3) Azure Portal
+4) Azure PowerShell
+
+
+1) Create Managed identity
+2) Apply Managed Identity to Storage Account, Container or Blob
+3) Use Managed Identity to perform actions on Storage Account, Container or Blob
+
+

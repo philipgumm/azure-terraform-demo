@@ -28,7 +28,7 @@ LabManagement-rg = "LabManagement"
 linux_vm_configurations = {
   linux_vm = {
     name            = "app-lin-srv"
-    size            = "Standard_B2s"
+    size            = "Standard_D2s_v6"
     os              = "Linux"
     version         = "latest"
     image_publisher = "ntegralinc1586961136942"
@@ -53,6 +53,7 @@ windows_vm_configurations = {
     image_offer     = "WindowsServer"
     image_sku       = "2019-Datacenter"
   }
+  
 }
 
 

@@ -46,4 +46,4 @@ Prometheus and Grafana integration
 Defender installation
 
 Problems:
-Internal DNS resolution requires first Windows Server meaning configuration management needs to deploy to IP. 
+
