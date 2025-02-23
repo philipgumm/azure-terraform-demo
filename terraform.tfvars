@@ -28,12 +28,12 @@ LabManagement-rg = "LabManagement"
 linux_vm_configurations = {
   linux_vm = {
     name            = "app-lin-srv"
-    size            = "Standard_D2s_v6"
+    size            = "Standard_B2ms"
     os              = "Linux"
     version         = "latest"
-    image_publisher = "ntegralinc1586961136942"
-    image_offer     = "ntg_fedora_40"
-    image_sku       = "ntg_fedora_40"
+    image_publisher = "ProComputers"
+    image_offer     = "redhat-9-gen2"
+    image_sku       = "redhat-9-gen2"
   }
 } 
 windows_vm_configurations = {
