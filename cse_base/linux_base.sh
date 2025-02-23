@@ -12,7 +12,7 @@ fi
 
 timeout 1200 sudo dnf update -y >> /tmp/custom_fedora_update.log 2>&1
 timeout 600 sudo dnf install -y epel-release >> /tmp/epel_release.log 2>&1
-timeout 200 sudo dnf install -y ansible >> /tmp/custom_ansible_install.log 2>&1
+timeout 300 sudo dnf install -y ansible >> /tmp/custom_ansible_install.log 2>&1
 
 # &> /tmp/custom_script.log
 
