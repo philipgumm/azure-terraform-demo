@@ -21,7 +21,7 @@ $Sku = "redhat-9-gen2"
 $Location = "Southeast Asia"
 $Publisher = "RedHat"
 $Offer = "RHEL"
-$Sku = "9-gen2"
+$Sku = "95_gen2"
 
 Get-AzVMImagePublisher -Location $Location
 Get-AzVMImageOffer -Location $Location -PublisherName $Publisher 
@@ -68,4 +68,13 @@ $vmSizes = Get-AzComputeResourceSku -Location $Location | Where-Object {
 
 $vmSizes | Select-Object Name, Locations | Format-Table -AutoSize
 
-Get-AzMarketplaceterms -Publisher $Publisher -Product $Offer -Name $Sku  | Set-AzMarketplaceterms -Accept
+Find-Module Az.MarketplaceOrdering | install-Module
+
+Get-AzMarketplaceterms -Publisher "RedHat" -Product "RHEL" -Name "95_gen2" | Set-AzMarketplaceterms -Accept
+
+
+
+# Use Cloud Shell Azure Cli in Windows Terminal
+az vm image list-offers --location "Southeast Asia" --publisher "RedHat"
+az vm image list-sku --location "Southeast Asia" --publisher "RedHat" --offer "rh-rhel"
+az vm image terms accept --publisher "RedHat" --offer "rh-rhel" --plan "rh-rhel9"

@@ -32,8 +32,8 @@ linux_vm_configurations = {
     os              = "Linux"
     version         = "latest"
     image_publisher = "RedHat"
-    image_offer     = "RHEL"
-    image_sku       = "9-gen2"
+    image_offer     = "rh-rhel"
+    image_sku       = "rh-rhel9"
   }
 } 
 windows_vm_configurations = {
