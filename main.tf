@@ -203,12 +203,6 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
     sku       = each.value.image_sku
     version   = "latest"
   }
-
-  plan {
-    name      = each.value.image_sku
-    publisher = each.value.image_publisher
-    product   = each.value.image_offer
-  }
 }
 
 resource "azurerm_managed_disk" "windows_data_disks" {
