@@ -203,6 +203,12 @@ resource "azurerm_linux_virtual_machine" "linux_vm" {
     sku       = each.value.image_sku
     version   = "latest"
   }
+
+  plan {
+    name      = "rh-rhel9"
+    publisher = "redhat"
+    product   = "rh-rhel"
+  }
 }
 
 resource "azurerm_managed_disk" "windows_data_disks" {
