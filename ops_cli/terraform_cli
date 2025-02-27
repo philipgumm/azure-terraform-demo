@@ -21,3 +21,7 @@ terraform state
 terraform test	
 terraform untaint	
 terraform version	
+
+
+# Local manual run
+

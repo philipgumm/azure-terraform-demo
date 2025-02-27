@@ -31,9 +31,9 @@ linux_vm_configurations = {
     size            = "Standard_B2ms"
     os              = "Linux"
     version         = "latest"
-    image_publisher = "ProComputers"
-    image_offer     = "redhat-9-gen2"
-    image_sku       = "redhat-9-gen2"
+    image_publisher = "RedHat"
+    image_offer     = "RHEL"
+    image_sku       = "9-gen2"
   }
 } 
 windows_vm_configurations = {

@@ -13,13 +13,23 @@ functionn Get-VM-Size {
 
 
 }
-
-
-Get-AzVMImagePublisher -Location $Location
-Get-AzVMImageOffer -Location $Location -PublisherName "RedHat"
-Get-AzVMImageSku -Location $Location -PublisherName "ProComputers" -Offer "redhat-9-gen2"
+$Location = "Southeast Asia"
+$Publisher = "ProComputers"
+$Offer = "redhat-9-gen2"
+$Sku = "redhat-9-gen2"
 
 $Location = "Southeast Asia"
+$Publisher = "RedHat"
+$Offer = "RHEL"
+$Sku = "9-gen2"
+
+Get-AzVMImagePublisher -Location $Location
+Get-AzVMImageOffer -Location $Location -PublisherName $Publisher 
+Get-AzVMImageSku -Location $Location -PublisherName $Publisher -Offer $Offer
+Get-AzMarketplaceterms -Publisher $Publisher -Product $Offer -Name $Sku
+
+
+
 $linuxPublishers = @()
 
 # Get all publishers in the location
@@ -41,3 +51,21 @@ foreach ($publisher in $publishers.PublisherName) {
 }
 
 $linuxPublishers | Format-Table -AutoSize
+
+
+function FunctionName {
+    param (
+        OptionalParameters
+    )
+    
+}
+
+
+$vmSizes = Get-AzComputeResourceSku -Location $Location | Where-Object {
+    $_.ResourceType -eq "virtualMachines" -and
+    $_.Name -match "Standard" # Only include VM size names
+}
+
+$vmSizes | Select-Object Name, Locations | Format-Table -AutoSize
+
+Get-AzMarketplaceterms -Publisher $Publisher -Product $Offer -Name $Sku  | Set-AzMarketplaceterms -Accept
