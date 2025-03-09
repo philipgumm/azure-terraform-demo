@@ -71,7 +71,7 @@ jobs:
       - name: "Get Terraform Outputs"
         id: tf_outputs
         run: |
-          terraform output -json inventory_json | jq '.' > inventory.json
+          terraform output -raw inventory_json | jq '.' > inventory.json
   
       - name: Upload Inventory to Azure Blob
         run: |
