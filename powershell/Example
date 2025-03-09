@@ -1,0 +1,192 @@
+Get-Childitem -Path C:\blp -filter "*.zip" 
+
+$hashtable = @{
+    Name = Philip
+    Age = 40
+    City = "Singapore"
+}
+
+$lotsofhashes = @(
+    @{Name = "Philip"; Age = 40; City = "Singapore"},
+    @{Name = "Cathy"; Age = 36; City = "Xian"},
+    @{Name = "Dawei"; Age = 42; City = "Hubei"}
+)
+
+Write-Output $lotsofhashes[1].Name
+
+$name = "Philip"
+function Get-Name {
+    params(
+        [string]$name,
+        [int]$age,
+        [string]$city
+    )
+}
+
+
+$name = Cathy
+switch ($name) {
+    "Philip" {Write-Output "Hello $name!"}
+    "Cathy" {Write-Output "Hello $name!"}
+    "Dawei" {Write-Output "Hello $name!"}
+    default {Write-Output "Hello everyone else!"}
+}
+
+$i = 0
+do {
+    Write-Output "Hello, count $i"
+    $i++
+} until ($i -eq 5)
+
+New-ADUser -Name "John Doe" -SamAccountName "jdoe" -UserPrincipalName "jdoe@domain.com" -GivenName "John" -Surname "Doe" -Enabled $true -PassThru
+
+do {
+    
+} while (
+    
+)
+
+function Get-Userinfo {
+    [CmdletBinding()]
+    param (
+        [parameters(Mandatory=$true, ValueFromPipeline=$true)]
+        [string]$name
+    )
+
+        process {
+
+        }
+
+}
+
+$RemoteComputer = "RemotePC"   # Change to the target computer name or IP
+$OutputFile = "C:\Temp\RemoteHostInfo.txt"  # File to save output
+
+# Execute command remotely
+$Result = Invoke-Command -ComputerName $RemoteComputer -ScriptBlock {
+    $HostName = [System.Net.Dns]::GetHostName()
+    $IP = (Get-NetIPAddress | Where-Object AddressFamily -eq "IPv4" | Select-Object -ExpandProperty IPAddress) -join ", "
+    
+    [PSCustomObject]@{
+        HostName = $HostName
+        IPAddress = $IP
+    }
+}
+# Save output to file
+$Result | Out-File -FilePath $OutputFile -Encoding UTF8
+
+# Display output
+Write-Output "Hostname and IP written to $OutputFile"
+Get-Content $OutputFile  # Show file content
+
+
+$UserParams = @{
+    Name           = "John Doe"
+    SamAccountName = "jdoe"
+    UserPrincipalName = "jdoe@domain.com"
+    GivenName      = "John"
+    Surname        = "Doe"
+    Enabled        = $true
+}
+
+New-ADUser @UserParams
+
+$InvokeParams = @{
+    ComputerName = "Server01"
+    ScriptBlock  = { Get-Service }
+    Credential   = Get-Credential
+}
+
+Invoke-Command @InvokeParams
+
+function Out-Humans {
+    param (
+        [parameters(Mandatory=$true, ValueFromPipeline=$true)]
+        [string]$humans
+
+
+    )
+    foreach ($human in $humans) {
+        
+        $human.ToUpperInvariant()
+
+ 
+} 
+
+@("Philip Gumm", "Cathy Chen", "Dawei Li", "Yuxin Li") | Out-Humans
+
+
+$subName = "mcsmith".Substring(2,5)
+"Mc" + $Subname.ToUpperInvariant()
+
+$name = "mcsmith"
+$capitalisedName
+$name | get-member
+
+
+"text" | Get-Member
+
+Split
+$text = "mcsmith".split(3)
+
+"mcsmith"
+$name = "mcsmith"
+if ($name.StartsWith("mc")) {
+
+}
+$caseName = 
+
+$caseName.split("Mc")
+
+$name = "mcsmith"
+switch ($name){
+    "mc*" {(Get-Culture).TextInfo.ToTitleCase("$name")}
+}
+$name
+$
+So we still need to split it. 
+
+switch ($x) {
+    condition {  }
+    Default {}
+}
+"text".ToUpperInvariant()
+
+# Capitalisation test
+$name = "mcsmith"
+if ($name.StartsWith("mc")) {
+    $split = $name.split("mc")
+    write-output $split[0]
+    write-output $split[1]
+}
+$text = (Get-Culture).TextInfo.ToTitleCase("mcsmith")
+
+function Set-Uppercase {
+   1. 
+   
+    param (
+        [parameters(Mandatory=$true, Value)]
+        [string]$thing
+    )
+    
+}
+
+$name = "mcsmith"
+switch -Wildcard ($name) {
+    "mc*" {  
+        $prefix = $name.Substring(0,2)
+        $suffix = $name.Substring(2)
+        $prefixCap = (Get-Culture).TextInfo.ToTitleCase($prefix.ToLower())
+        $suffixCap = (Get-Culture).TextInfo.ToTitleCase($suffix.ToLower())
+        $fullname = $prefixCap + $suffixCap
+        write-output $fullname
+    }
+    Default {write-output "The name doesn't have an mc prefix"}
+}
+
+$name.Substring(0).ToUpper() + $name.Substring(1).ToLower() + $name.Substring(2).ToUpper() 
+
+# Replace Path and replace file name in function
+Select-String -replace 
+# ValueFROMpipeline
+# ValueFROMPipelineByPropertyName
